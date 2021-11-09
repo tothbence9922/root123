@@ -12,6 +12,13 @@ CAFF::CAFF(std::string input_path) {
 CAFF::~CAFF() {
     data.clear();
 }
+
+void CAFF::parse() {
+    readCAFFHeader();
+    readCAFFCredits();
+    readCAFFAnimation();
+}
+
 void CAFF::set_num_anim(int num_anim_) {
     num_anim = num_anim_;
 }
@@ -22,9 +29,7 @@ void CAFF::incrementIndex(int x = 1) {
 int CAFF::getIndex() {
     return index;
 }
-void CAFF::set_duration(int duration_) {
-    duration = duration_;
-}
+
 void CAFF::set_creator(std::string creator_) {
     creator = creator_;
 }

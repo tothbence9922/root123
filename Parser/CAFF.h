@@ -20,6 +20,8 @@ public:
 
     ~CAFF();
 
+    void parse();
+
     void readCAFFHeader();
 
     void readCAFFCredits();
