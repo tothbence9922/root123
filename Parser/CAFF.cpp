@@ -1,5 +1,6 @@
 #include "CAFF.h"
 #include "ParserException.h"
+#include "EasyBMP.hpp"
 
 CAFF::CAFF(std::string input_path) {
 
@@ -17,6 +18,7 @@ void CAFF::parse() {
     readCAFFHeader();
     readCAFFCredits();
     readCAFFAnimation();
+    createThumbnail();
 }
 
 void CAFF::set_num_anim(int num_anim_) {
@@ -189,4 +191,24 @@ void CAFF::readCIFFContent(CIFF* image) {
 
 std::string CAFF::get_creator() {
     return creator;
+}
+
+void CAFF::createThumbnail() {
+    auto image_duration = images[0];
+    std::vector<Pixel> pixels = std::get<0>(image_duration).getPixels();
+    CIFF image = std::get<0>(image_duration);
+    EasyBMP::Image img(image.getWidth(), image.getHeight(), "thumbnail.jpg");
+    
+    int index = 0;
+    for (int i = 0; i < image.getHeight(); i++)
+    {
+        for (int j = 0; j < image.getWidth(); j++)
+        {
+            Pixel p = pixels[index];
+            img.SetPixel(j, i, EasyBMP::RGBColor(p.r, p.g, p.b));
+            index++;
+        }
+    }
+
+    img.Write();
 }

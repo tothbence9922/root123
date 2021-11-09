@@ -107,6 +107,7 @@
   <ItemGroup>
     <ClInclude Include="CAFF.h" />
     <ClInclude Include="CIFF.h" />
+    <ClInclude Include="EasyBMP.hpp" />
     <ClInclude Include="ParserException.h" />
     <ClInclude Include="Pixel.h" />
   </ItemGroup>

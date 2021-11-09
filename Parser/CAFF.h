@@ -48,5 +48,5 @@ public:
 
     void readCIFFContent(CIFF* image);
     
-
+    void createThumbnail();
 };
