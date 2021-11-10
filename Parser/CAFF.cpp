@@ -65,7 +65,7 @@ int CAFF::read_block_int(int block_Length) {
         throw ParserException("index out of range");
     }
     for (int i = 0; i < block_Length; i++) {
-        ret |= ((int)data[getIndex() + i]) << (i * block_Length);
+        ret |= ((int)data[getIndex() + i]) << (i * 8);
     }
     incrementIndex(block_Length);
     return ret;
