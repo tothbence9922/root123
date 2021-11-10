@@ -13,6 +13,7 @@ CAFF::CAFF(bool fuzzing ,std::string input_path = "1.caff") {
     
     index = 0;
     num_anim = 0;
+    date = "";
 
 }
 
@@ -40,6 +41,21 @@ int CAFF::getIndex() {
 
 void CAFF::set_creator(const std::string &creator_) {
     creator = creator_;
+}
+
+void CAFF::set_date() {
+
+    std::string  Y = std::to_string(read_block_int(2));
+    std::string  M = std::to_string(read_block_int(1));
+    std::string  D = std::to_string(read_block_int(1));
+    std::string  h = std::to_string(read_block_int(1));
+    std::string  m = std::to_string(read_block_int(1));
+
+    date = (Y + "-" + M + "-" + D + " " + h + ":" + m);
+
+}
+std::string CAFF::get_date() {
+    return date;
 }
 
 int CAFF::read_block_int(int block_Length) {
@@ -98,13 +114,11 @@ void CAFF::readCAFFCredits() {
         throw ParserException("Header should start with ID:2");
     }
     incrementIndex();
+    
     //get the value of the length field 
     int len = read_block_int(8);
-    int Y = read_block_int(2);
-    int M = read_block_int(1);
-    int D = read_block_int(1);
-    int h = read_block_int(1);
-    int m = read_block_int(1);
+    set_date();
+    
     int creator_len = read_block_int(8);
         
     std::string creator = read_block_ascii(creator_len);

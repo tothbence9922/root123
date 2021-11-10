@@ -14,6 +14,7 @@ private:
     int num_anim;
     std::vector<unsigned char> data;
     std::string creator;
+    std::string date;
     std::vector<std::tuple<CIFF, unsigned int>> images;
 public:
     CAFF(bool fuzzing, std::string input_path);
@@ -42,6 +43,10 @@ public:
     int getIndex();
 
     void set_creator(const std::string &creator_);
+
+    void set_date();
+
+    std::string get_date();
 
     std::string get_creator();
 
