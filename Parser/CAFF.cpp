@@ -8,7 +8,13 @@ CAFF::CAFF( std::string input_path, bool fuzzing) : input_path_( input_path ), f
     }
     else {
         std::ifstream input_data(input_path_, std::ios::binary);
-        data = std::vector<unsigned char>(std::istreambuf_iterator<char>(input_data), {});
+        if (input_data) {
+            data = std::vector<unsigned char>(std::istreambuf_iterator<char>(input_data), {});
+        }
+        else {
+            throw ParserException("CAFF file does not exist.");
+        }
+        
     }
     
     index = 0;
