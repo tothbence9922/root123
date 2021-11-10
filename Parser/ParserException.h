@@ -5,7 +5,7 @@
 class ParserException : public std::exception {
 	std::string message;
 public:
-	ParserException(const std::string &message) : message(message), std::exception() {}
+	explicit ParserException(const std::string &message) : message(message), std::exception() {}
 
 	const char* what() const throw();
 };

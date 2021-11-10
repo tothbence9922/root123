@@ -2,7 +2,7 @@
 #include "ParserException.h"
 #include "EasyBMP.hpp"
 
-CAFF::CAFF(bool fuzzing ,std::string input_path = "1.caff") {
+CAFF::CAFF(bool fuzzing ,std::string input_path = "../../Parser_test/1.caff") {
     if (fuzzing) {
         data = std::vector<unsigned char>(std::istreambuf_iterator<char>(std::cin), {});
     }
@@ -102,14 +102,21 @@ void CAFF::readCAFFHeader() {
 
     //get header size
     int header_size = read_block_int(8);
-
+    if (header_size != 20) {
+        throw ParserException("header length mismatch");
+    }
     //get the number of animations
     int num_anim = read_block_int(8);
     set_num_anim(num_anim);
+    if (9 + len != getIndex()) {
+        throw ParserException("data length mismatch");
+    }
+    
 
 
 }
 void CAFF::readCAFFCredits() {
+    
     if (int(data[getIndex()]) != 2) {
         throw ParserException("Header should start with ID:2");
     }
@@ -117,12 +124,17 @@ void CAFF::readCAFFCredits() {
     
     //get the value of the length field 
     int len = read_block_int(8);
+    
+    int end = getIndex() + len;
     set_date();
     
     int creator_len = read_block_int(8);
         
     std::string creator = read_block_ascii(creator_len);
     set_creator(creator);
+    if (end != getIndex()) {
+        throw ParserException("data length mismatch");
+    }
         
 }
 void CAFF::readCAFFAnimation() {
