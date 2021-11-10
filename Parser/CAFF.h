@@ -16,7 +16,8 @@ private:
     std::string creator;
     std::vector<std::tuple<CIFF, unsigned int>> images;
 public:
-    CAFF(std::string input_path);
+    CAFF(bool fuzzing, std::string input_path);
+
 
     ~CAFF();
 
@@ -40,7 +41,7 @@ public:
 
     int getIndex();
 
-    void set_creator(std::string);
+    void set_creator(const std::string &creator_);
 
     std::string get_creator();
 

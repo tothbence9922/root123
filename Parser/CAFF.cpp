@@ -2,14 +2,20 @@
 #include "ParserException.h"
 #include "EasyBMP.hpp"
 
-CAFF::CAFF(std::string input_path) {
-
-    std::ifstream input_data(input_path, std::ios::binary);
-    data = std::vector<unsigned char>(std::istreambuf_iterator<char>(input_data), {});
+CAFF::CAFF(bool fuzzing ,std::string input_path = "1.caff") {
+    if (fuzzing) {
+        data = std::vector<unsigned char>(std::istreambuf_iterator<char>(std::cin), {});
+    }
+    else {
+        std::ifstream input_data(input_path, std::ios::binary);
+        data = std::vector<unsigned char>(std::istreambuf_iterator<char>(input_data), {});
+    }
+    
     index = 0;
     num_anim = 0;
 
 }
+
 CAFF::~CAFF() {
     data.clear();
 }
@@ -32,7 +38,7 @@ int CAFF::getIndex() {
     return index;
 }
 
-void CAFF::set_creator(std::string creator_) {
+void CAFF::set_creator(const std::string &creator_) {
     creator = creator_;
 }
 
@@ -195,9 +201,10 @@ std::string CAFF::get_creator() {
 
 void CAFF::createThumbnail() {
     auto image_duration = images[0];
-    std::vector<Pixel> pixels = std::get<0>(image_duration).getPixels();
     CIFF image = std::get<0>(image_duration);
-    EasyBMP::Image img(image.getWidth(), image.getHeight(), "thumbnail.jpg");
+    std::vector<Pixel> pixels = image.getPixels();
+
+    EasyBMP::Image img(image.getWidth(), image.getHeight(), "thumbnail.bmp");
     
     int index = 0;
     for (int i = 0; i < image.getHeight(); i++)

@@ -34,7 +34,7 @@ public:
 
     std::string getCaption();
 
-    void setCaption(std::string c);
+    void setCaption(const std::string &c);
 
     void pushTag(std::string tag);
 

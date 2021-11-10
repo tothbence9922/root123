@@ -1,8 +1,10 @@
 #include "CAFF.h"
 
 int main() {
-	std::string input_path = "1.caff";
-	CAFF caff(input_path);
+
+
+	std::string input_path = "2.caff";
+	CAFF caff(false,input_path);
 	caff.parse();
 	
 }

@@ -40,7 +40,7 @@ void CIFF::setHeight(unsigned int h) {
 std::string CIFF::getCaption() {
     return caption;
 }
-void CIFF::setCaption(std::string c) {
+void CIFF::setCaption(const std::string &c) {
     caption = c;
 }
 void CIFF::pushTag(std::string tag) {
