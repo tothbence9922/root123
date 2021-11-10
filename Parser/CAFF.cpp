@@ -2,12 +2,12 @@
 #include "ParserException.h"
 #include "EasyBMP.hpp"
 
-CAFF::CAFF(bool fuzzing ,std::string input_path = "../../Parser_test/1.caff") {
-    if (fuzzing) {
+CAFF::CAFF( std::string input_path, bool fuzzing) : input_path_( input_path ), fuzzing_( fuzzing ) {
+    if (fuzzing_) {
         data = std::vector<unsigned char>(std::istreambuf_iterator<char>(std::cin), {});
     }
     else {
-        std::ifstream input_data(input_path, std::ios::binary);
+        std::ifstream input_data(input_path_, std::ios::binary);
         data = std::vector<unsigned char>(std::istreambuf_iterator<char>(input_data), {});
     }
     

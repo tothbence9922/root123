@@ -16,8 +16,10 @@ private:
     std::string creator;
     std::string date;
     std::vector<std::tuple<CIFF, unsigned int>> images;
+    std::string input_path_;
+    bool fuzzing_;
 public:
-    CAFF(bool fuzzing, std::string input_path);
+    CAFF(std::string input_path = "../Parser_test/1.caff", bool fuzzing=false );
 
 
     ~CAFF();
