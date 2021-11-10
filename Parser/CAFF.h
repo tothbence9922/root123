@@ -32,11 +32,11 @@ public:
 
     void readCAFFAnimation();
 
-    int read_block_int(int block_Length);
+    int readBlockInt(int block_Length);
 
-    std::string read_block_ascii(int block_Length);
+    std::string readBlockAscii(int block_Length);
 
-    void set_num_anim(int num);
+    void setNumAnim(int num);
 
     int getNumAnim();
 
@@ -44,13 +44,13 @@ public:
 
     int getIndex();
 
-    void set_creator(const std::string &creator_);
+    void setCreator(const std::string &creator_);
 
-    void set_date();
+    void setDate();
 
-    std::string get_date();
+    std::string getDate();
 
-    std::string get_creator();
+    std::string getCreator();
 
     void readCIFFHeader(CIFF* image);
 

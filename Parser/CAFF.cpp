@@ -34,7 +34,7 @@ void CAFF::parse() {
     createThumbnail();
 }
 
-void CAFF::set_num_anim(int num_anim_) {
+void CAFF::setNumAnim(int num_anim_) {
     num_anim = num_anim_;
 }
 
@@ -45,26 +45,26 @@ int CAFF::getIndex() {
     return index;
 }
 
-void CAFF::set_creator(const std::string &creator_) {
+void CAFF::setCreator(const std::string &creator_) {
     creator = creator_;
 }
 
-void CAFF::set_date() {
+void CAFF::setDate() {
 
-    std::string  Y = std::to_string(read_block_int(2));
-    std::string  M = std::to_string(read_block_int(1));
-    std::string  D = std::to_string(read_block_int(1));
-    std::string  h = std::to_string(read_block_int(1));
-    std::string  m = std::to_string(read_block_int(1));
+    std::string  Y = std::to_string(readBlockInt(2));
+    std::string  M = std::to_string(readBlockInt(1));
+    std::string  D = std::to_string(readBlockInt(1));
+    std::string  h = std::to_string(readBlockInt(1));
+    std::string  m = std::to_string(readBlockInt(1));
 
     date = (Y + "-" + M + "-" + D + " " + h + ":" + m);
 
 }
-std::string CAFF::get_date() {
+std::string CAFF::getDate() {
     return date;
 }
 
-int CAFF::read_block_int(int block_Length) {
+int CAFF::readBlockInt(int block_Length) {
 
     int ret = 0;
     if (getIndex() + block_Length > data.size()) {
@@ -77,7 +77,7 @@ int CAFF::read_block_int(int block_Length) {
     return ret;
 
 }
-std::string CAFF::read_block_ascii(int block_Length) {
+std::string CAFF::readBlockAscii(int block_Length) {
     std::string ret;
     if (getIndex() + block_Length > data.size()) {
         throw ParserException("index out of range");
@@ -97,23 +97,23 @@ void CAFF::readCAFFHeader() {
     }
     incrementIndex();
     //get the value of the length field 
-    int len = read_block_int(8);
+    int len = readBlockInt(8);
     //Process Data Block
     //Check for Magic string
         
-    std::string magic = read_block_ascii(4);
+    std::string magic = readBlockAscii(4);
     if (magic != "CAFF") {
         throw ParserException("magic block should be CAFF");
     }
 
     //get header size
-    int header_size = read_block_int(8);
+    int header_size = readBlockInt(8);
     if (header_size != 20) {
         throw ParserException("header length mismatch");
     }
     //get the number of animations
-    int num_anim = read_block_int(8);
-    set_num_anim(num_anim);
+    int num_anim = readBlockInt(8);
+    setNumAnim(num_anim);
     if (9 + len != getIndex()) {
         throw ParserException("data length mismatch");
     }
@@ -129,15 +129,15 @@ void CAFF::readCAFFCredits() {
     incrementIndex();
     
     //get the value of the length field 
-    int len = read_block_int(8);
+    int len = readBlockInt(8);
     
     int end = getIndex() + len;
-    set_date();
+    setDate();
     
-    int creator_len = read_block_int(8);
+    int creator_len = readBlockInt(8);
         
-    std::string creator = read_block_ascii(creator_len);
-    set_creator(creator);
+    std::string creator = readBlockAscii(creator_len);
+    setCreator(creator);
     if (end != getIndex()) {
         throw ParserException("data length mismatch");
     }
@@ -150,9 +150,9 @@ void CAFF::readCAFFAnimation() {
         }
         incrementIndex();
 
-        int block_len = read_block_int(8);
+        int block_len = readBlockInt(8);
         
-        int duration = read_block_int(8);
+        int duration = readBlockInt(8);
 
         CIFF image = CIFF();
         readCIFFHeader(&image);
@@ -168,15 +168,15 @@ int CAFF::getNumAnim() {
 void CAFF::readCIFFHeader(CIFF* image) {
     int start_index = getIndex();
 
-    std::string magic = read_block_ascii(4);
+    std::string magic = readBlockAscii(4);
     if (magic != "CIFF") {
         throw ParserException("Magic block should be CIFF");
     }
 
-    int header_size = read_block_int(8);
-    int content_size = read_block_int(8);
-    int width = read_block_int(8);
-    int height = read_block_int(8);
+    int header_size = readBlockInt(8);
+    int content_size = readBlockInt(8);
+    int width = readBlockInt(8);
+    int height = readBlockInt(8);
 
     if (content_size == width * height * 3) {
         image->setContentSize(content_size);
@@ -190,7 +190,7 @@ void CAFF::readCIFFHeader(CIFF* image) {
     std::string caption;
     while (data[getIndex()] != '\n') {
         if (getIndex() <= start_index + header_size) {
-            caption += read_block_ascii(1);
+            caption += readBlockAscii(1);
         }
         else {
             throw ParserException("Invalid CIFF header");
@@ -210,7 +210,7 @@ void CAFF::readCIFFHeader(CIFF* image) {
             throw ParserException("Invalid CIFF header");
         }
         if (data[getIndex()] != '\0')
-            currentTag += read_block_ascii(1);
+            currentTag += readBlockAscii(1);
         else {
             image->pushTag(currentTag);
             currentTag.clear();
@@ -227,7 +227,7 @@ void CAFF::readCIFFContent(CIFF* image) {
     }
 }
 
-std::string CAFF::get_creator() {
+std::string CAFF::getCreator() {
     return creator;
 }
 
