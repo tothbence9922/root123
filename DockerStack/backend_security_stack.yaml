@@ -1,0 +1,48 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:8.0.1
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 9000:80
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    container_name: keycloak
+    restart: always
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin 
+      DB_ADDR: mysql
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      JDBC_PARAMS: "useSSL=false"
+    ports:
+      - 8080:8080
+    links:
+      - mysql
+
+    
+
+
+  
+
