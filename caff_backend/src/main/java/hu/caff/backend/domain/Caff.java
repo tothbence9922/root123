@@ -39,8 +39,7 @@ public class Caff {
 
     private String createdAt;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments =new ArrayList<>();
 
 }

@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CaffDTO {
+public class CommentDTO {
 
     private Long id;
-    private String name;
-    private byte[] thumbnail;
+
     private String userId;
-    private String username;
-    private byte[] data;
-    private String creator;
+
+    private String text;
+
     private String createdAt;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<CommentDTO> comments =new ArrayList<>();
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long caffId;
 }

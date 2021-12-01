@@ -1,6 +1,9 @@
 package hu.caff.backend.controller;
 
 import hu.caff.backend.domain.Caff;
+import hu.caff.backend.domain.Comment;
+import hu.caff.backend.dto.CaffDTO;
+import hu.caff.backend.dto.CommentDTO;
 import hu.caff.backend.service.CaffDomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -16,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -43,65 +48,77 @@ public class CaffController {
     @Autowired
     CaffDomainService CAFFDomainService;
 
+    @Autowired
+    ConversionService conversionService;
+
+
 
     @RequestMapping(path = "/caff/{caffId}", method = RequestMethod.GET, produces = "application/json")
-    Caff getResourceById(@PathVariable(name = "caffId") Long caffId){
+    CaffDTO getResourceById(@PathVariable(name = "caffId") Long caffId){
         LOG.info(String.format("Requesting caff with id %s", caffId));
 
-        Caff CAFF = CAFFDomainService.getResourceById(caffId);
+        Caff caff = CAFFDomainService.getResourceById(caffId);
+
+        CaffDTO caffDTO = conversionService.convert(caff,CaffDTO.class);
 
         LOG.info("Caff found. Sending caff data to client.");
-        return CAFF;
+        return caffDTO;
     }
 
     @RequestMapping(path = "/caff", method = RequestMethod.GET, produces = "application/json")
-    List<Caff> getAllResources(){
+    List<CaffDTO> getAllResources(){
+
         LOG.info("Requesting all caffs.");
 
-        List<Caff> Caffs = CAFFDomainService.getAllResources();
+        List<Caff> caffs = CAFFDomainService.getAllResources();
+
+        List<CaffDTO> caffDTOs = caffs.stream().map(
+                caff -> conversionService.convert(caff,CaffDTO.class)).collect(Collectors.toList());
 
         LOG.info("Caff list found. Sending data to client.");
-        return Caffs;
+        return caffDTOs;
     }
 
-
     @RequestMapping(path = "/caff", method = RequestMethod.POST, produces = "application/json")
-    ResponseEntity<Object> createResource(@RequestBody Caff caff){
+    ResponseEntity<Object> createResource(@RequestBody CaffDTO caffDTO){
         LOG.info("Creating new caff");
+
+        Caff caff = conversionService.convert(caffDTO,Caff.class);
 
         caff = CAFFDomainService.createResource(caff);
 
         LOG.info(String.format("Caff created with id: %s", caff.getId()));
 
-        LOG.info("Creating success response with data and entity reference.");
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .replacePath("/caff/{caffId}")
                 .buildAndExpand(caff.getId()).toUri();
 
+        caffDTO = conversionService.convert(caff,CaffDTO.class);
         return ResponseEntity
                 .created(location)
-                .body(caff);
+                .body(caffDTO);
     }
 
 
     @RequestMapping(path = "/caff/{caffId}", method = RequestMethod.DELETE, produces = "application/json")
     ResponseEntity<Object> removeResourceById(@PathVariable(name = "caffId") Long caffId){
         LOG.info(String.format("Deleting caff of %s", caffId));
-        Caff CAFF = CAFFDomainService.removeResourceById(caffId);
-
+        Caff caff = CAFFDomainService.removeResourceById(caffId);
+        CaffDTO caffDTO = conversionService.convert(caff,CaffDTO.class);
         LOG.info("Caff deleted successfully. Sending response to client");
-        return ResponseEntity.ok(CAFF);
+        return ResponseEntity.ok(caffDTO);
     }
 
 
     @RequestMapping(path = "/caff", method = RequestMethod.PUT, produces = "application/json")
-    ResponseEntity<Object> updateResource(@RequestBody Caff caff){
-        LOG.info(String.format("Updating caff with id: %s", caff.getId()));
+    ResponseEntity<Object> updateResource(@RequestBody CaffDTO caffDTO){
+        LOG.info(String.format("Updating caff with id: %s", caffDTO.getId()));
 
+        Caff caff = conversionService.convert(caffDTO,Caff.class);
         caff = CAFFDomainService.updateResource(caff);
-
+        caffDTO = conversionService.convert(caff,CaffDTO.class);
         LOG.info("Caff updated. Sending success response to client.");
-        return ResponseEntity.ok(caff);
+        return ResponseEntity.ok(caffDTO);
     }
 
 }
