@@ -76,6 +76,7 @@ public class CaffController {
 
         List<CaffDTO> caffDTOs = caffs.stream().map(
                 caff -> conversionService.convert(caff,CaffDTO.class)).collect(Collectors.toList());
+        caffDTOs.forEach(caffDTO -> caffDTO.setData(null));
 
         LOG.info("Caff list found. Sending data to client.");
         return caffDTOs;

@@ -22,6 +22,7 @@ public class CaffDTO {
     private byte[] thumbnail;
     private String userId;
     private String username;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private byte[] data;
     private String creator;
     private String createdAt;

@@ -91,7 +91,8 @@ public class CommentController {
 
         Caff caff = CAFFDomainService.getResourceById(commentDTO.getCaffId());
 
-        Comment comment = conversionService.convert(commentDTO,Comment.class);
+        Comment comment = commentDomainService.getResourceById(commentDTO.getId());
+
         caff.getComments().remove(comment);
         CAFFDomainService.updateResource(caff);
 
