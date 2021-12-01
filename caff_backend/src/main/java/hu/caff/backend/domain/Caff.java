@@ -24,7 +24,7 @@ public class Caff {
     private String name;
 
     @Lob
-    @Column(columnDefinition="BLOB")
+    @Column(columnDefinition="LONGBLOB")
     private byte[] thumbnail;
 
     private String userId;
@@ -32,7 +32,7 @@ public class Caff {
     private String username;
 
     @Lob
-    @Column(columnDefinition="BLOB")
+    @Column(columnDefinition="LONGBLOB")
     private byte[] data;
 
     private String creator;

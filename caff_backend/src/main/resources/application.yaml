@@ -1,6 +1,6 @@
 spring:
   application:
-    name: caff-backend
+    name: caff_backend
   security:
     oauth2:
       resourceserver:
@@ -8,14 +8,13 @@ spring:
           jwk-set-uri: http://localhost:8080/auth/realms/testrealm/protocol/openid-connect/certs
           issuer-uri: http://localhost:8080/auth/realms/testrealm
   datasource:
-    url: "jdbc:mysql://localhost:3306/${spring.application.name}?createDatabaseIfNotExist=true&requireSSL=false&useSSL=false"
+    url: "jdbc:mysql://localhost:3306/${spring.application.name}?createDatabaseIfNotExist=true&requireSSL=false&useSSL=false&jdbcCompliantTruncation=false"
     username: "root"
     password: "root"
-    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: "org.hibernate.dialect.MySQL5InnoDBDialect"
+    database-platform: "org.hibernate.dialect.MySQL8Dialect"
     show-sql: false
     generate-ddl: true
     properties:
