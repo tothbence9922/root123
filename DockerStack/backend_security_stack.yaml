@@ -4,6 +4,7 @@ services:
   mysql:
     image: mysql:8.0.1
     container_name: mysql_db
+    command: "--max_allowed_packet=52428800"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: keycloak
@@ -31,7 +32,7 @@ services:
     restart: always
     environment:
       KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin 
+      KEYCLOAK_PASSWORD: admin
       DB_ADDR: mysql
       DB_USER: keycloak
       DB_PASSWORD: password
