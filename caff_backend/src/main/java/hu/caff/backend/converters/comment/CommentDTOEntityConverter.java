@@ -1,11 +1,7 @@
 package hu.caff.backend.converters.comment;
 
-import hu.caff.backend.domain.Caff;
 import hu.caff.backend.domain.Comment;
-import hu.caff.backend.dto.CaffDTO;
 import hu.caff.backend.dto.CommentDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

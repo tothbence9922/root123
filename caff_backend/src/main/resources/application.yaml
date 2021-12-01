@@ -1,6 +1,12 @@
 spring:
   application:
     name: caff-backend
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/auth/realms/testrealm/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8080/auth/realms/testrealm
   datasource:
     url: "jdbc:h2:file:./data/app"
     username: "sa"
@@ -28,4 +34,9 @@ logging:
 
 data:
   allowedOrigin: "http://localhost:3000"
+
+keycloak:
+  clientId: account
+  token_url: http://localhost:8080/auth/realms/testrealm/protocol/openid-connect/token
+
 
