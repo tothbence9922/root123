@@ -1,0 +1,8 @@
+{
+    "realm": "testrealm",
+    "url": "http://localhost:8080/auth",
+    "redirect-uri": "http://localhost:3000/browse",
+    "ssl-required": "none",
+    "public-client": true,
+    "clientId": "app"
+}

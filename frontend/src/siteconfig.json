@@ -1,0 +1,20 @@
+{
+    "activeColor": "primary",
+    "themes": {
+        "primary": {
+            "main": "#3f50b5",
+            "dark": "#002884",
+            "light": "#757ce8",
+            "contrastText": "#ffffff"
+        },
+        "secondary": {
+            "main": "#262729",
+            "dark": "#262729",
+            "light": "#537D8D",
+            "lightOriginal": "#D7D9D7",
+            "contrastText": "#D7D9D7",
+            "successText": "#00AF54",
+            "failText": "#461220"
+        }
+    }
+}
