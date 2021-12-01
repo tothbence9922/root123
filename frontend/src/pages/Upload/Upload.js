@@ -120,7 +120,7 @@ const Upload = () => {
             formData.append("userId", formik.values.userId);
             formData.append("creator", formik.values.creator);
             formData.append("metaData", formik.values.metaData);
-            formData.append("file", file);
+            formData.append("daffData", file);
             const req = axios.post(
                 URLS.postCaff,
                 formData,
@@ -175,7 +175,6 @@ const Upload = () => {
                         name="name"
                         label="Title of the CAFF file"
                         fullWidth
-                        autoComplete="given-name"
                         value={formik.values.name}
                         onChange={formik.handleChange}
                         error={formik.touched.name && Boolean(formik.errors.name)}
