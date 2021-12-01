@@ -15,35 +15,18 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class CaffController {
-
-    @Value("${data.allowedOrigin}")
-    String allowedOrigin;
-
-    @Bean
-    @ConditionalOnMissingBean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry
-                        .addMapping("/**")
-                        .allowedMethods("GET", "POST","PUT", "DELETE","OPTIONS")
-                        .allowedHeaders("*");
-            }
-        };
-    }
-    //private ConversionService conversionService = new DefaultConversionService();
 
     private final Logger LOG = LoggerFactory.getLogger(CaffController.class);
 
@@ -83,10 +66,12 @@ public class CaffController {
     }
 
     @RequestMapping(path = "/caff", method = RequestMethod.POST, produces = "application/json")
-    ResponseEntity<Object> createResource(@RequestBody CaffDTO caffDTO){
+    ResponseEntity<Object> createResource(@RequestPart CaffDTO caffDTO, @RequestPart MultipartFile caffData) throws IOException {
         LOG.info("Creating new caff");
 
         Caff caff = conversionService.convert(caffDTO,Caff.class);
+
+        caff.setData(caffData.getBytes());
 
         caff = CAFFDomainService.createResource(caff);
 
