@@ -1,5 +1,10 @@
+import { Button } from "@material-ui/core"
+import axios from "axios"
 import CaffPreview from "components/caff/CaffPreview/CaffPreview"
+import CommentModal from "components/caff/Comment/CommentModal"
+import URLS from "constants/URLS"
 import { useState } from "react"
+import AuthService from "services/Auth/AuthService"
 import styled from "styled-components"
 
 const CaffWrapper = styled.div`
@@ -51,6 +56,14 @@ const CaffMedia = styled.img`
 `
 
 
+const ButtonsRow = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-around;
+    margin: 1rem 0;
+`
+
 const DetailRow = styled.div`
     width: 100%;
     display: flex;
@@ -78,9 +91,35 @@ const dummyData = {
     createdAt: '2021-09-11',
     metaData: "sample_meta"
 }
+
 const Caff = () => {
 
     const [caff, setCaff] = useState(dummyData)
+
+    const [res, setRes] = useState()
+    const [err, setErr] = useState()
+    const [loading, setLoadingl] = useState(false)
+
+    const handleDownload = async () => {
+        try {
+            setLoadingl(true)
+            const res = await axios.get(
+                URLS.downloadCaff,
+                {
+                    headers: {
+                        Authorization: AuthService.authHeader()
+                    }
+                }
+            )
+            setRes(res)
+            setLoadingl(false)
+        } catch (err) {
+            setErr(err)
+        }
+    }
+
+    const [open, setOpen] = useState(false)
+    const toggleOpen = () => { setOpen(!open) }
 
     return (
 
@@ -123,9 +162,16 @@ const Caff = () => {
                         {caff.metaData}
                     </DetailValue>
                 </DetailRow>
-            <MediaWrapper>
-                <CaffMedia src={caff.thumbnail} alt={`CAFF preview for ${caff.name}`} />
-            </MediaWrapper>
+                <MediaWrapper>
+                    <CaffMedia src={caff.thumbnail} alt={`CAFF preview for ${caff.name}`} />
+                </MediaWrapper>
+                <ButtonsRow>
+                    <Button onClick={handleDownload} variant="contained" component="button">Download</Button>
+                    <Button onClick={toggleOpen} variant="contained" component="button">Leave a comment!</Button>
+                </ButtonsRow>
+                {open &&
+                    <CommentModal id={caff.id} setOpen={setOpen} />
+                }
             </DetailsWrapper>
         </CaffWrapper>
     );
