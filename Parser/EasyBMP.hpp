@@ -10,6 +10,7 @@ License: MIT
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 namespace EasyBMP
 {
@@ -60,7 +61,7 @@ namespace EasyBMP
         void DrawCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& color, bool fill);
         void SetFileName(const string& _outFileName);
         void Write(const string& _outFileName);
-        void Write();
+        std::string Write();
         inline int64_t w() const { return width; }
         inline int64_t h() const { return height; }
 
@@ -281,14 +282,10 @@ namespace EasyBMP
     }
 
     // BMP headers code: https://en.wikipedia.org/wiki/User:Evercat/Buddhabrot.c
-    void Image::Write()
+    std::string Image::Write()
     {
 
-        outFile.open(outFileName, ofstream::binary);
-        if (!outFile.is_open()) {
-            std::cerr << "EasyBMP ERROR: Can't open file to write data." << std::endl;
-            assert(false);
-        }
+        std::ostringstream outFile;
 
         unsigned int headers[13];
         int paddedSize, extraBytes;
@@ -369,7 +366,8 @@ namespace EasyBMP
             }
         }
 
-        outFile.close();
+        const std::string out = outFile.str();
+        return out;
     }
 }
 

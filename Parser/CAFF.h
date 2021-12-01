@@ -18,6 +18,7 @@ private:
     std::vector<std::tuple<CIFF, unsigned int>> images;
     std::string input_path_;
     bool fuzzing_;
+    std::string thumbnail;
 public:
     CAFF(std::string input_path = "../Parser_test/1.caff", bool fuzzing=false );
 
@@ -57,4 +58,10 @@ public:
     void readCIFFContent(CIFF* image);
     
     void createThumbnail();
+
+    std::vector<std::tuple<CIFF, unsigned int>> getImages();
+
+    std::string getThumbnail();
+
+    void setThumbnail(std::string thumbnail_);
 };

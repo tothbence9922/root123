@@ -1,8 +1,9 @@
+#include "pch.h"
 #include "CAFF.h"
 #include "ParserException.h"
 #include "EasyBMP.hpp"
 
-CAFF::CAFF( std::string input_path, bool fuzzing) : input_path_( input_path ), fuzzing_( fuzzing ) {
+CAFF::CAFF(std::string input_path, bool fuzzing) : input_path_(input_path), fuzzing_(fuzzing) {
     if (fuzzing_) {
         data = std::vector<unsigned char>(std::istreambuf_iterator<char>(std::cin), {});
     }
@@ -14,9 +15,9 @@ CAFF::CAFF( std::string input_path, bool fuzzing) : input_path_( input_path ), f
         else {
             throw ParserException("CAFF file does not exist.");
         }
-        
+
     }
-    
+
     index = 0;
     num_anim = 0;
     date = "";
@@ -45,7 +46,7 @@ int CAFF::getIndex() {
     return index;
 }
 
-void CAFF::setCreator(const std::string &creator_) {
+void CAFF::setCreator(const std::string& creator_) {
     creator = creator_;
 }
 
@@ -100,7 +101,7 @@ void CAFF::readCAFFHeader() {
     int len = readBlockInt(8);
     //Process Data Block
     //Check for Magic string
-        
+
     std::string magic = readBlockAscii(4);
     if (magic != "CAFF") {
         throw ParserException("magic block should be CAFF");
@@ -117,31 +118,31 @@ void CAFF::readCAFFHeader() {
     if (9 + len != getIndex()) {
         throw ParserException("data length mismatch");
     }
-    
+
 
 
 }
 void CAFF::readCAFFCredits() {
-    
+
     if (int(data[getIndex()]) != 2) {
         throw ParserException("Header should start with ID:2");
     }
     incrementIndex();
-    
+
     //get the value of the length field 
     int len = readBlockInt(8);
-    
+
     int end = getIndex() + len;
     setDate();
-    
+
     int creator_len = readBlockInt(8);
-        
+
     std::string creator = readBlockAscii(creator_len);
     setCreator(creator);
     if (end != getIndex()) {
         throw ParserException("data length mismatch");
     }
-        
+
 }
 void CAFF::readCAFFAnimation() {
     for (int i = 0; i < getNumAnim(); i++) {
@@ -151,7 +152,7 @@ void CAFF::readCAFFAnimation() {
         incrementIndex();
 
         int block_len = readBlockInt(8);
-        
+
         int duration = readBlockInt(8);
 
         CIFF image = CIFF();
@@ -237,7 +238,7 @@ void CAFF::createThumbnail() {
     std::vector<Pixel> pixels = image.getPixels();
 
     EasyBMP::Image img(image.getWidth(), image.getHeight(), "thumbnail.bmp");
-    
+
     int index = 0;
     for (int i = 0; i < image.getHeight(); i++)
     {
@@ -250,7 +251,6 @@ void CAFF::createThumbnail() {
     }
 
     const std::string out = img.Write();
-    
     setThumbnail(out);
 }
 
