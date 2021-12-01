@@ -73,7 +73,6 @@ public class CommentController {
 
         CAFFDomainService.updateResource(caff);
         LOG.info(String.format("Comment created with id: %s", comment.getId()));
-
         LOG.info("Creating success response with data and entity reference.");
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .replacePath("/comment/{commentId}")
@@ -110,8 +109,8 @@ public class CommentController {
         Comment comment = conversionService.convert(commentDTO,Comment.class);
         comment = commentDomainService.updateResource(comment);
         LOG.info("Comment updated. Sending success response to client.");
-
-        return ResponseEntity.ok(commentDTO);
+        CommentDTO respone = conversionService.convert(comment, CommentDTO.class);
+        return ResponseEntity.ok(respone);
     }
 
 }
