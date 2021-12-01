@@ -28,8 +28,9 @@ const updateToken = (successCb) => {
 
 const getUsername = () => _kc.tokenParsed?.preferred_username
 const getFirstName = () => _kc.tokenParsed?.given_name
+const tokenParsed = () => _kc.tokenParsed
 const isLoggedIn = () => !!_kc.token
-const hasRole = (roles) => roles.some(role => _kc.hasRealmRole(role))
+const hasRole = (role) => _kc.tokenParsed.realm_access.roles.includes(role)
 
 const authHeader = () => `Bearer ${getToken()}`
 
@@ -44,6 +45,7 @@ const AuthService = {
     getUsername,
     getFirstName,
     hasRole,
+    tokenParsed
 }
 
 export default AuthService

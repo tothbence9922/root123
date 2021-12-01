@@ -155,8 +155,13 @@ const Header = (props) => {
       component="nav"
       className={classes.bigList}
     >
+      {AuthService.hasRole("admin") &&
+        <ListItem component={RouterLink} to={'/admin'} key={`header_big_option_admin`} >
+          <ListItemText classes={{ primary: classes.listItemText }} primary={"Admin menu"} />
+        </ListItem>
+      }
       {HeaderData.optionsAuth.map((option, idx) => (
-        <ListItem disabled={option.disabled} component={RouterLink} to={option.to} key={`header_big_option_${idx}`} >
+        <ListItem component={RouterLink} to={option.to} key={`header_big_option_${idx}`} >
           <ListItemText classes={{ primary: classes.listItemText }} primary={option.name} />
         </ListItem>
       ))}

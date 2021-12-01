@@ -4,6 +4,7 @@ import { errorToast, successToast } from 'components/common/Toast/Toast'
 import URLS from 'constants/URLS'
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
+import { useParams } from 'react-router'
 import AuthService from 'services/Auth/AuthService'
 import styled from 'styled-components'
 import validationSchema from 'validation/Comment/Schemas'
@@ -71,10 +72,13 @@ const ButtonWrapper = styled.div`˙
 `
 
 function CommentModal(props) {
+    const { id } = useParams()
 
     const formik = useFormik({
         initialValues: {
             text: '',
+            userId: AuthService.getUsername(),
+            caffId: id
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -86,14 +90,13 @@ function CommentModal(props) {
     const [err, setErr] = useState()
     const [loading, setLoading] = useState(false)
 
+
     const handlePost = async (values) => {
         try {
-            let body = { ...values }
-            body.userId = AuthService.getUsername()
             setLoading(true)
             const res = await axios.post(
-                URLS.postComment + `${props.caffId}`,
-                body,
+                URLS.comment,
+                values,
                 {
                     headers: {
                         Authorization: AuthService.authHeader(),

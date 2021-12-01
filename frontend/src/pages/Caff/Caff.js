@@ -3,9 +3,12 @@ import axios from "axios"
 import CaffPreview from "components/caff/CaffPreview/CaffPreview"
 import CommentModal from "components/caff/Comment/CommentModal"
 import URLS from "constants/URLS"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router"
 import AuthService from "services/Auth/AuthService"
 import styled from "styled-components"
+import { errorToast } from "components/common/Toast/Toast"
+import { Link } from "react-router-dom"
 
 const CaffWrapper = styled.div`
     padding: 2rem 0;
@@ -94,85 +97,118 @@ const dummyData = {
 
 const Caff = () => {
 
-    const [caff, setCaff] = useState(dummyData)
+    const { id } = useParams()
+    const [caff, setCaff] = useState();
+    const [errGet, setErrGet] = useState();
+    const [loadingGet, setLoadingGet] = useState(true);
 
-    const [res, setRes] = useState()
-    const [err, setErr] = useState()
-    const [loading, setLoadingl] = useState(false)
-
-    const handleDownload = async () => {
+    const fetchData = async () => {
         try {
-            setLoadingl(true)
+            setLoadingGet(true)
             const res = await axios.get(
-                URLS.downloadCaff,
+                URLS.caff + `/${id}`,
                 {
                     headers: {
                         Authorization: AuthService.authHeader()
                     }
                 }
             )
-            setRes(res)
-            setLoadingl(false)
+            if (res.status === 200) {
+                setCaff(res.data)
+            } else {
+                errorToast("An error occured while loading the CAFF.")
+            }
+            setLoadingGet(false)
+
         } catch (err) {
-            setErr(err)
+            setErrGet(err)
         }
     }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     const [open, setOpen] = useState(false)
     const toggleOpen = () => { setOpen(!open) }
 
+    const handleDownload = () => {
+        const url = window.URL.createObjectURL(
+            new Blob([caff.data]),
+          );
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute(
+            'download',
+            `${caff.name}.caff`,
+          );
+      
+          // Append to html link element page
+          document.body.appendChild(link);
+      
+          // Start download
+          link.click();
+      
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+    }
+
     return (
 
         <CaffWrapper>
-            <DetailsWrapper>
-                <TitleWrapper>
-                    <TitleText>
-                        {caff.name}
-                    </TitleText>
-                </TitleWrapper>
-                <DetailRow>
-                    <DetailName>
-                        User ID
-                    </DetailName>
-                    <DetailValue>
-                        {caff.userId}
-                    </DetailValue>
-                </DetailRow>
-                <DetailRow>
-                    <DetailName>
-                        Creator
-                    </DetailName>
-                    <DetailValue>
-                        {caff.creator}
-                    </DetailValue>
-                </DetailRow>
-                <DetailRow>
-                    <DetailName>
-                        Date of creation
-                    </DetailName>
-                    <DetailValue>
-                        {caff.createdAt}
-                    </DetailValue>
-                </DetailRow>
-                <DetailRow>
-                    <DetailName>
-                        Meta data
-                    </DetailName>
-                    <DetailValue>
-                        {caff.metaData}
-                    </DetailValue>
-                </DetailRow>
-                <MediaWrapper>
-                    <CaffMedia src={caff.thumbnail} alt={`CAFF preview for ${caff.name}`} />
-                </MediaWrapper>
-                <ButtonsRow>
-                    <Button onClick={handleDownload} variant="contained" component="button">Download</Button>
-                    <Button onClick={toggleOpen} variant="contained" component="button">Leave a comment!</Button>
-                </ButtonsRow>
-                {open &&
-                    <CommentModal id={caff.id} setOpen={setOpen} />
-                }
-            </DetailsWrapper>
+            {
+                caff &&
+                <DetailsWrapper>
+                    <TitleWrapper>
+                        <TitleText>
+                            {caff.name}
+                        </TitleText>
+                    </TitleWrapper>
+                    <DetailRow>
+                        <DetailName>
+                            User ID
+                        </DetailName>
+                        <DetailValue>
+                            {caff.userId}
+                        </DetailValue>
+                    </DetailRow>
+                    <DetailRow>
+                        <DetailName>
+                            Creator
+                        </DetailName>
+                        <DetailValue>
+                            {caff.creator}
+                        </DetailValue>
+                    </DetailRow>
+                    <DetailRow>
+                        <DetailName>
+                            Date of creation
+                        </DetailName>
+                        <DetailValue>
+                            {caff.createdAt}
+                        </DetailValue>
+                    </DetailRow>
+                    <DetailRow>
+                        <DetailName>
+                            Meta data
+                        </DetailName>
+                        <DetailValue>
+                            {caff.metaData}
+                        </DetailValue>
+                    </DetailRow>
+                    <MediaWrapper>
+                        <CaffMedia src={caff.thumbnail} alt={`CAFF preview for ${caff.name}`} />
+                    </MediaWrapper>
+                    <ButtonsRow>
+                        <Button onClick={handleDownload} variant="contained" component="button">Download</Button>
+                        <Button onClick={toggleOpen} variant="contained" component="button">Leave a comment!</Button>
+                    </ButtonsRow>
+                    {open &&
+                        <CommentModal id={caff.id} setOpen={setOpen} />
+                    }
+                </DetailsWrapper>
+            }
+
         </CaffWrapper>
     );
 }

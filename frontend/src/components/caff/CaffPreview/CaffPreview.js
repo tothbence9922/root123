@@ -1,5 +1,9 @@
-import { useNavigate } from "react-router"
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router"
+import AuthService from "services/Auth/AuthService"
 import styled from "styled-components"
+import axios from "axios"
+import URLs from "constants/URLS"
 
 const PreviewCard = styled.div`
     width: 100%;
@@ -53,6 +57,7 @@ const CardTitle = styled.h3`
 const CaffPreview = (props) => {
 
     const navigate = useNavigate()
+    
 
     return (
         <PreviewCard onClick={() => navigate(`/browse/${props.id}`)}>

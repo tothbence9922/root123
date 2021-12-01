@@ -1,6 +1,8 @@
 import { Button, TextField } from "@material-ui/core"
 import axios from "axios"
 import CaffPreview from "components/caff/CaffPreview/CaffPreview"
+import UploadModal from "components/caff/Upload/UploadModal"
+import { errorToast, successToast } from "components/common/Toast/Toast"
 import URLS from "constants/URLS"
 import { useFormik } from "formik"
 import { useEffect, useRef, useState } from "react"
@@ -39,9 +41,11 @@ const TitleWrapper = styled.div`
     margin: 2rem;
 
 `
+
 const TitleText = styled.h1`
     font-size: 3rem;
 `
+
 const MediaWrapper = styled.div`
     width: 100%;
 
@@ -64,12 +68,14 @@ const DetailRow = styled.div`
     align-items: center;
     margin: 1rem 0;
 `
+
 const DetailRowHorizontal = styled.div`
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 `
+
 const DetailName = styled.p`
     font-size: 1rem;
     font-weight: 400;
@@ -80,31 +86,19 @@ const DetailValue = styled.p`
     font-weight: 600;
 `
 
-const dummyData = {
-    id: '1',
-    name: 'caff-1',
-    thumbnail: 'https://cdn2.thedogapi.com/images/S1GWY_hr7_1280.jpg',
-    userId: 'user-1',
-    data: null,
-    creator: 'caff-creator-1',
-    createdAt: '2021-09-11',
-    metaData: "sample_meta"
-}
 const Upload = () => {
     const [file, setFile] = useState()
-
     const formik = useFormik({
         initialValues: {
             name: '',
             userId: AuthService.getUsername(),
+            username: AuthService.getUsername(),
             creator: AuthService.getUsername(),
-            metaData: "sample_meta",
-            data: null
+            comments: []
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
-            console.log(values)
-            handlePost(values)
+        onSubmit: async (values) => {
+            await handlePost(values)
         },
     });
 
@@ -112,30 +106,37 @@ const Upload = () => {
     const [err, setErr] = useState()
     const [loading, setLoading] = useState(false)
 
+    const [progressData, setProgressData] = useState({ loaded: 0, total: 1 })
+
     const handlePost = async (values) => {
         try {
             setLoading(true)
             let formData = new FormData();
-            formData.append("name", formik.values.name);
-            formData.append("userId", formik.values.userId);
-            formData.append("creator", formik.values.creator);
-            formData.append("metaData", formik.values.metaData);
-            formData.append("daffData", file);
-            const req = axios.post(
-                URLS.postCaff,
+            formData.append('caffDTO', new Blob([JSON.stringify(formik.values)], {
+                type: "application/json"
+            }));
+            formData.append('caffData', file);
+            console.log(formData)
+            const res = await axios.post(
+                URLS.caff,
                 formData,
                 {
                     headers: {
                         Authorization: AuthService.authHeader(),
-                        "Content-Type": "multipart/form-data",
+                        ContentType: "multipart/form-data",
                     },
-                    onUploadProgress: (e) => console.log(e)
+                    onUploadProgress: (e) => setProgressData(e)
                 }
             )
-            console.log(req)
-            const res = await req
-            setRes(res.data)
-            setLoading(false)
+            console.log({res})
+            if (res.status === 200) {
+                setRes(res.data)
+                successToast("Upload successful!")
+                setLoading(false)
+            } else {
+                errorToast("Upload failed!")
+                setLoading(false)
+            }
         } catch (err) {
             setErr(err)
         }
@@ -145,23 +146,23 @@ const Upload = () => {
         setFile(file)
     }
 
-    useEffect(() => {
-        formik.values.data = file
-    }, [file])
-
     const hiddenFileInput = useRef(null);
+
     const handleClick = event => {
         hiddenFileInput.current.click();
     };
+
     const handleChange = event => {
         const fileUploaded = event.target.files[0];
         handleFile(fileUploaded);
     };
 
-
     return (
 
         <UploadWrapper>
+            {loading &&
+                <UploadModal progressData={progressData} />
+            }
             <DetailsWrapper>
                 <TitleWrapper>
                     <TitleText>
