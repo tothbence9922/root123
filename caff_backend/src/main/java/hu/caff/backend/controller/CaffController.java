@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -42,6 +43,7 @@ public class CaffController {
             }
         };
     }
+    //private ConversionService conversionService = new DefaultConversionService();
 
     private final Logger LOG = LoggerFactory.getLogger(CaffController.class);
 

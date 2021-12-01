@@ -1,4 +1,4 @@
-package hu.caff.backend.converters.comment;
+package hu.caff.backend.converters.caff;
 
 import hu.caff.backend.domain.Caff;
 import hu.caff.backend.dto.CaffDTO;
