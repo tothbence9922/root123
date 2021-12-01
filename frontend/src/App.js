@@ -46,6 +46,8 @@ function App() {
             <Route exact path="/browse" element={AuthService.isLoggedIn() ? <Browse /> : AuthService.doLogin()} />
             <Route exact path="/browse/:id" element={AuthService.isLoggedIn() ? <Caff /> : AuthService.doLogin()} />
             <Route exact path="/upload" element={AuthService.isLoggedIn() ? <Upload /> : AuthService.doLogin()} />
+            {//<Route exact path="/admin" element={AuthService.hasRole("admin") ? <Admin /> : AuthService.doLogin()} />
+            }
 
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -155,7 +155,7 @@ const Header = (props) => {
       component="nav"
       className={classes.bigList}
     >
-      {AuthService.hasRole("admin") &&
+      {AuthService.hasRole("admin_user") &&
         <ListItem component={RouterLink} to={'/admin'} key={`header_big_option_admin`} >
           <ListItemText classes={{ primary: classes.listItemText }} primary={"Admin menu"} />
         </ListItem>

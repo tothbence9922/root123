@@ -20,12 +20,6 @@ const doLogout = _kc.logout
 
 const getToken = () => _kc.token
 
-const updateToken = (successCb) => {
-    _kc.updateToken(5)
-        .then(successCb)
-        .catch(doLogin)
-}
-
 const getUsername = () => _kc.tokenParsed?.preferred_username
 const getFirstName = () => _kc.tokenParsed?.given_name
 const tokenParsed = () => _kc.tokenParsed
@@ -41,7 +35,6 @@ const AuthService = {
     doLogin,
     doLogout,
     getToken,
-    updateToken,
     getUsername,
     getFirstName,
     hasRole,
