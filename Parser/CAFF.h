@@ -20,7 +20,7 @@ private:
     bool fuzzing_;
     std::string thumbnail;
 public:
-    CAFF(std::string input_path = "../Parser_test/1.caff", bool fuzzing=false );
+    CAFF(const std::string &input_path = "../Parser_test/1.caff", bool fuzzing=false );
 
 
     ~CAFF();
@@ -63,5 +63,5 @@ public:
 
     std::string getThumbnail();
 
-    void setThumbnail(std::string thumbnail_);
+    void setThumbnail(const std::string &thumbnail_);
 };

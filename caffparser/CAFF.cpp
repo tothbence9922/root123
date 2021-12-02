@@ -3,7 +3,7 @@
 #include "ParserException.h"
 #include "EasyBMP.hpp"
 
-CAFF::CAFF(std::string input_path, bool fuzzing) : input_path_(input_path), fuzzing_(fuzzing) {
+CAFF::CAFF(const std::string &input_path, bool fuzzing) : input_path_(input_path), fuzzing_(fuzzing) {
     if (fuzzing_) {
         data = std::vector<unsigned char>(std::istreambuf_iterator<char>(std::cin), {});
     }
@@ -274,6 +274,6 @@ std::string CAFF::getThumbnail() {
     return thumbnail;
 }
 
-void CAFF::setThumbnail(std::string thumbnail_) {
+void CAFF::setThumbnail(const std::string &thumbnail_) {
     thumbnail = thumbnail_;
 }
