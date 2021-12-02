@@ -53,7 +53,7 @@ public:
 
     std::string getCreator();
 
-    void readCIFFHeader(CIFF* image);
+    void readCIFFHeader(CIFF* image, int block_len);
 
     void readCIFFContent(CIFF* image);
     
