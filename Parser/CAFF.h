@@ -22,7 +22,7 @@ private:
 public:
     CAFF(const std::string &input_path = "../Parser_test/1.caff", bool fuzzing=false );
 
-    CAFF(std::vector<unsigned char> data, bool fuzzing = false);
+    CAFF(const std::vector<unsigned char> data, bool fuzzing = false);
 
     ~CAFF();
 

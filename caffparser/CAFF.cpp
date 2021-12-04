@@ -3,12 +3,12 @@
 #include "ParserException.h"
 #include "EasyBMP.hpp"
 
-CAFF::CAFF(std::vector<unsigned char> data_, bool fuzzing) : data(data_), fuzzing_(fuzzing) {
+CAFF::CAFF(const std::vector<unsigned char> data_, bool fuzzing) : data(data_), fuzzing_(fuzzing) {
     if (fuzzing_) {
         data = std::vector<unsigned char>(std::istreambuf_iterator<char>(std::cin), {});
     }
     else {
-        if (data.size() == 0) throw ParserException("CAFF file does not exist.");
+        if (data.size() == 0) throw ParserException("CAFF size is zero.");
     }
 
     index = 0;
@@ -111,10 +111,8 @@ void CAFF::readCAFFHeader() {
     if (9 + len != getIndex()) {
         throw ParserException("data length mismatch");
     }
-
-
-
 }
+
 void CAFF::readCAFFCredits() {
 
     if (int(data[getIndex()]) != 2) {
