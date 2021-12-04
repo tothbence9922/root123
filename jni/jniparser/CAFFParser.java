@@ -5,6 +5,6 @@ public class CAFFParser {
 			System.loadLibrary("caffparser");
 	}
 	
-	public native CAFFResponse parse(String path);
+	public native CAFFResponse parse(byte[] caff_file);
 	
 }

@@ -8,10 +8,15 @@
 #include <sstream>
 #include <iterator>
 
-JNIEXPORT jobject JNICALL Java_jni_jniparser_CAFFParser_parse(JNIEnv *env, jobject thisObj, jstring input) {
-	const char* cinput = env->GetStringUTFChars(input, NULL);
-	if (NULL == cinput) return NULL;
-	std::string StringInput(cinput);
+JNIEXPORT jobject JNICALL Java_jni_jniparser_CAFFParser_parse(JNIEnv *env, jobject thisObj, jbyteArray input) {
+	int len = env->GetArrayLength(input);
+	if (len == 0) {
+		printf("input is empty. terminating\n");
+		return NULL;
+	}
+	unsigned char* buffer = new unsigned char[len];
+	env->GetByteArrayRegion(input, 0, len, reinterpret_cast<jbyte*>(buffer));
+	std::vector<unsigned char> data = std::vector<unsigned char>(buffer, buffer + len);
 
 	jclass caffResponseClass = env->FindClass("jni/jniparser/CAFFResponse");
 	if (caffResponseClass == NULL) {
@@ -57,7 +62,7 @@ JNIEXPORT jobject JNICALL Java_jni_jniparser_CAFFParser_parse(JNIEnv *env, jobje
 	CAFF* caff;
 	const char * thumbnail;
 	try {
-		caff = new CAFF(StringInput);
+		caff = new CAFF(data);
 		caff->parse();
 	}
 	catch (ParserException e) {

@@ -3,19 +3,12 @@
 #include "ParserException.h"
 #include "EasyBMP.hpp"
 
-CAFF::CAFF(std::string input_path, bool fuzzing) : input_path_(input_path), fuzzing_(fuzzing) {
+CAFF::CAFF(std::vector<unsigned char> data_, bool fuzzing) : data(data_), fuzzing_(fuzzing) {
     if (fuzzing_) {
         data = std::vector<unsigned char>(std::istreambuf_iterator<char>(std::cin), {});
     }
     else {
-        std::ifstream input_data(input_path_, std::ios::binary);
-        if (input_data) {
-            data = std::vector<unsigned char>(std::istreambuf_iterator<char>(input_data), {});
-        }
-        else {
-            throw ParserException("CAFF file does not exist.");
-        }
-
+        if (data.size() == 0) throw ParserException("CAFF file does not exist.");
     }
 
     index = 0;
