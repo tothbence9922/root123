@@ -145,13 +145,25 @@ void CAFF::readCAFFAnimation() {
         incrementIndex();
 
         int block_len = readBlockInt(8);
-
+        int end = getIndex() + block_len;
         int duration = readBlockInt(8);
 
+
         CIFF image = CIFF();
-        readCIFFHeader(&image);
-        readCIFFContent(&image);
+        readCIFFHeader(&image, block_len);
+        if (data.size() >= getIndex() + image.getContentSize()) {
+            readCIFFContent(&image);
+        }
+        else {
+            throw ParserException("index out of range");
+        }
+
+        if (end != getIndex()) {
+            throw ParserException("data length mismatch");
+        }
+
         images.push_back(std::make_tuple(image, duration));
+
     }
 }
 
@@ -159,7 +171,7 @@ int CAFF::getNumAnim() {
     return num_anim;
 }
 
-void CAFF::readCIFFHeader(CIFF* image) {
+void CAFF::readCIFFHeader(CIFF* image, int block_len) {
     int start_index = getIndex();
 
     std::string magic = readBlockAscii(4);
@@ -255,6 +267,6 @@ std::string CAFF::getThumbnail() {
     return thumbnail;
 }
 
-void CAFF::setThumbnail(std::string thumbnail_) {
+void CAFF::setThumbnail(const std::string &thumbnail_) {
     thumbnail = thumbnail_;
 }

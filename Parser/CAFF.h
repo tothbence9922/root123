@@ -20,7 +20,7 @@ private:
     bool fuzzing_;
     std::string thumbnail;
 public:
-    CAFF(std::string input_path = "../Parser_test/1.caff", bool fuzzing=false );
+    CAFF(const std::string &input_path = "../Parser_test/1.caff", bool fuzzing=false );
 
     CAFF(std::vector<unsigned char> data, bool fuzzing = false);
 
@@ -54,7 +54,7 @@ public:
 
     std::string getCreator();
 
-    void readCIFFHeader(CIFF* image);
+    void readCIFFHeader(CIFF* image, int block_len);
 
     void readCIFFContent(CIFF* image);
     
@@ -64,5 +64,5 @@ public:
 
     std::string getThumbnail();
 
-    void setThumbnail(std::string thumbnail_);
+    void setThumbnail(const std::string &thumbnail_);
 };

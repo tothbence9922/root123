@@ -60,12 +60,12 @@ JNIEXPORT jobject JNICALL Java_jni_jniparser_CAFFParser_parse(JNIEnv *env, jobje
 		return NULL;
 	}
 	CAFF* caff;
-	const char * thumbnail;
+	
 	try {
 		caff = new CAFF(data);
 		caff->parse();
 	}
-	catch (ParserException e) {
+	catch (ParserException &e) {
 		env->CallObjectMethod(newCAFFResponse, mSetError, env->NewStringUTF(e.what()));
 		return newCAFFResponse;
 	}

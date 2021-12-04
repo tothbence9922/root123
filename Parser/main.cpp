@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 			caff->parse();
 		}
 	}
-	catch (ParserException e) {
+	catch (ParserException &e) {
 		std::cout << e.what() << std::endl;
 		return -1;
 	}
