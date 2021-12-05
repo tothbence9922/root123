@@ -14,9 +14,11 @@ JNIEXPORT jobject JNICALL Java_jni_jniparser_CAFFParser_parse(JNIEnv *env, jobje
 		printf("input is empty. terminating\n");
 		return NULL;
 	}
+
 	unsigned char* buffer = new unsigned char[len];
 	env->GetByteArrayRegion(input, 0, len, reinterpret_cast<jbyte*>(buffer));
 	std::vector<unsigned char> data = std::vector<unsigned char>(buffer, buffer + len);
+	delete[] buffer;
 
 	jclass caffResponseClass = env->FindClass("jni/jniparser/CAFFResponse");
 	if (caffResponseClass == NULL) {
@@ -59,10 +61,9 @@ JNIEXPORT jobject JNICALL Java_jni_jniparser_CAFFParser_parse(JNIEnv *env, jobje
 		printf("SetError method does not exist. Returning.\n");
 		return NULL;
 	}
-	CAFF* caff;
-	
+
+	std::shared_ptr<CAFF> caff = std::make_shared<CAFF>(data);
 	try {
-		caff = new CAFF(data);
 		caff->parse();
 	}
 	catch (ParserException &e) {
@@ -83,8 +84,13 @@ JNIEXPORT jobject JNICALL Java_jni_jniparser_CAFFParser_parse(JNIEnv *env, jobje
 	outTags.pop_back();
 	env->CallObjectMethod(newCAFFResponse, mSetThumbnailTags, env->NewStringUTF(outTags.c_str()));
 
-	jbyteArray arr = env->NewByteArray(caff->getThumbnail().length());
-	env->SetByteArrayRegion(arr, 0, caff->getThumbnail().length(), (jbyte*)caff->getThumbnail().c_str());
+	size_t thumbnail_len = caff->getThumbnail().length();
+	if (thumbnail_len > ((size_t)std::numeric_limits<jsize>::max)) {
+		printf("Thumbnail too large for jsize conversion. Returning...\n");
+		return NULL;
+	}
+	jbyteArray arr = env->NewByteArray((jsize)thumbnail_len);
+	env->SetByteArrayRegion(arr, 0, (jsize)thumbnail_len, (jbyte*)caff->getThumbnail().c_str());
 	env->CallObjectMethod(newCAFFResponse, mSetThumbnail, arr);
 	
 	return newCAFFResponse;

@@ -26,6 +26,7 @@ CAFF::CAFF( const std::string &input_path, bool fuzzing) : input_path_( input_pa
 
 CAFF::~CAFF() {
     data.clear();
+    images.clear();
 }
 
 void CAFF::parse() {

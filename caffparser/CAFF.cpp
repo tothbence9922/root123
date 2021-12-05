@@ -19,6 +19,7 @@ CAFF::CAFF(const std::vector<unsigned char> data_, bool fuzzing) : data(data_), 
 
 CAFF::~CAFF() {
     data.clear();
+    images.clear();
 }
 
 void CAFF::parse() {
