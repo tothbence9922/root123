@@ -8,6 +8,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,7 +24,7 @@ public class CaffEntityDTOConverter implements Converter<Caff, CaffDTO> {
                .userId(caff.getUserId())
                .comments(caff.getComments()
                        .stream().map(comment ->
-                       conversionService.convert(comment, CommentDTO.class))
+                       conversionService.convert(comment, CommentDTO.class)).filter(Objects::nonNull)
                        .collect(Collectors.toList()))
                .createdAt(caff.getCreatedAt())
                .creator(caff.getCreator())

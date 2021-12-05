@@ -18,7 +18,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class CommentController {
     private final Logger LOG = LoggerFactory.getLogger(CommentController.class);
