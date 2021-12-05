@@ -172,7 +172,6 @@ const Caff = () => {
                     </DetailRow>
                     <MediaWrapper>
                         <CaffMedia src={`data:image/jpeg;base64,${caff.thumbnail}`} alt={`CAFF preview for ${caff.name}`} />
-                        <p>{caff.data}</p>
                     </MediaWrapper>
                     <ButtonsRow>
                         <Button onClick={AuthService.isLoggedIn() ? handleDownload : () => { AuthService.doLogin() }} variant="contained" component="button">Download</Button>
