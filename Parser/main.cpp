@@ -1,5 +1,6 @@
 #include "CAFF.h"
 #include "ParserException.h"
+#include <memory.h>
 
 int main(int argc, char* argv[]) {
 	try {

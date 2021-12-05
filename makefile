@@ -1,5 +1,5 @@
 default:
-	g++ Parser/*.cpp -o Parser_test/caffparser
+	g++ -std=c++11 Parser/*.cpp -o Parser_test/caffparser
 fuzzing:
 	afl-g++ Parser/*.cpp -o Parser_test/fuzzing_caffparser
 clean-all:
