@@ -15,6 +15,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,6 +70,7 @@ public class CommentController {
             LOG.info(String.format("Caff not found with id %s", commentDTO.getCaffId()));
         }
         Comment comment = conversionService.convert(commentDTO,Comment.class);
+        comment.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         caff.getComments().add(comment);
 

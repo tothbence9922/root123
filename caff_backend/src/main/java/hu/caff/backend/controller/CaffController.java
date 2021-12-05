@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,6 +79,11 @@ public class CaffController {
         CAFFResponse resp = new CAFFParser().parse(caffData.getBytes());
 
         System.out.println(resp.GetError());
+
+        if (resp == null || resp.GetError() != null){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
         System.out.println(resp.GetCreator());
         System.out.println(resp.GetDate());
         System.out.println(resp.GetThumbnailCaption());
@@ -86,6 +94,13 @@ public class CaffController {
         caff.setData(caffData.getBytes());
 
         caff.setThumbnail(resp.GetThumbnail());
+
+        caff.setCreatedAt(resp.GetDate());
+
+        caff.getMetadata().add(resp.GetDate());
+        caff.getMetadata().add(resp.GetCreator());
+        caff.getMetadata().add(resp.GetThumbnailCaption());
+        caff.getMetadata().add(resp.GetThumbnailTags());
 
         caff = CAFFDomainService.createResource(caff);
 
