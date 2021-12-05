@@ -176,6 +176,34 @@ const Caff = () => {
         }
     }
 
+    const [blob, setBlob] = useState();
+    const [errBlob, setErrBlob] = useState();
+    const [loadingBlob, setLoadingBlob] = useState(true);
+
+    const fetchBlobData = async () => {
+        try {
+            setLoadingBlob(true)
+            const res = await axios.get(
+                URLS.caff + `/blob/${id}`,
+                {
+                    headers: {
+                        Authorization: AuthService.authHeader()
+                    }
+                }
+            )
+            if (res.status >= 200 && res.status < 300) {
+                setBlob(res.data)
+            } else {
+                errorToast("An error occured while loading the CAFF blob.")
+            }
+            setLoadingBlob(false)
+
+        } catch (err) {
+            setLoadingBlob(false)
+            setErrBlob(err)
+        }
+    }
+
     const [delRes, setDelRes] = useState();
     const [delErr, setDelErr] = useState();
     const [delLoading, setDelLoading] = useState(true);
@@ -209,19 +237,27 @@ const Caff = () => {
 
     useEffect(() => {
         fetchData()
+        fetchBlobData()
     }, [])
 
     const [open, setOpen] = useState(false)
     const toggleOpen = () => { setOpen(!open) }
 
-    const handleDownload = () => {
-        let data = new Blob([caff.data], { type: 'application/octet-stream; charset=x-user-defined;' });
-        let csvURL = window.URL.createObjectURL(data);
-        let tempLink = document.createElement('a');
-        tempLink.href = csvURL;
-        tempLink.setAttribute('download', 'filename.caff');
-        tempLink.click();
-    }
+    function handleDownload() {
+        var binaryString = window.atob(caff.data);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        for (var i = 0; i < binaryLen; i++) {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        var ablob = new Blob([bytes], { type: "application/octet-stream" });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(ablob);
+        var fileName = `${caff.name}.caff`;
+        link.download = fileName;
+        link.click();
+    };
 
     return (
 
