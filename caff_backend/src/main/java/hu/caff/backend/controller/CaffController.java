@@ -44,6 +44,20 @@ public class CaffController {
 
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(path = "/caff/blob/{caffId}", method = RequestMethod.GET, produces = "application/json")
+    byte[] getBlobById(@RequestHeader("userId") String userId,@PathVariable(name = "caffId") Long caffId){
+        LOG.info(String.format("Requesting caff with id %s", caffId));
+
+        Caff caff = CAFFDomainService.getResourceById(caffId);
+
+        CaffDTO caffDTO = conversionService.convert(caff,CaffDTO.class);
+
+        LOG.info("Caff found. Sending caff data to client.");
+        return caffDTO.getData();
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/caff/{caffId}", method = RequestMethod.GET, produces = "application/json")
     CaffDTO getResourceById(@RequestHeader("userId") String userId,@PathVariable(name = "caffId") Long caffId){
         LOG.info(String.format("Requesting caff with id %s", caffId));
@@ -55,6 +69,7 @@ public class CaffController {
         LOG.info("Caff found. Sending caff data to client.");
         return caffDTO;
     }
+    
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/caff", method = RequestMethod.GET, produces = "application/json")
     List<CaffDTO> getAllResources(@RequestHeader("userId") String userId){
