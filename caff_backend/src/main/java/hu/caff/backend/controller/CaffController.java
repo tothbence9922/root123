@@ -17,6 +17,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -42,7 +43,7 @@ public class CaffController {
     ConversionService conversionService;
 
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/caff/{caffId}", method = RequestMethod.GET, produces = "application/json")
     CaffDTO getResourceById(@PathVariable(name = "caffId") Long caffId){
         LOG.info(String.format("Requesting caff with id %s", caffId));
@@ -54,7 +55,7 @@ public class CaffController {
         LOG.info("Caff found. Sending caff data to client.");
         return caffDTO;
     }
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/caff", method = RequestMethod.GET, produces = "application/json")
     List<CaffDTO> getAllResources(){
 
@@ -66,13 +67,13 @@ public class CaffController {
                 caff -> conversionService.convert(caff,CaffDTO.class)).collect(Collectors.toList());
         caffDTOs.forEach(caffDTO -> caffDTO.setData(null));
 
-        LOG.info("Caff list found. Sending data to client.");
+        LOG.info("Caff list found. Sending data to client. ");
         return caffDTOs;
     }
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/caff", method = RequestMethod.POST, produces = "application/json")
     ResponseEntity<Object> createResource(@RequestPart CaffDTO caffDTO, @RequestPart MultipartFile caffData) throws IOException {
-        LOG.info("Creating new caff");
+        LOG.info("Creating new caff ");
 
         Caff caff = conversionService.convert(caffDTO,Caff.class);
 
@@ -116,7 +117,7 @@ public class CaffController {
                 .body(caffDTO);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN_USER')")
     @RequestMapping(path = "/caff/{caffId}", method = RequestMethod.DELETE, produces = "application/json")
     ResponseEntity<Object> removeResourceById(@PathVariable(name = "caffId") Long caffId){
         LOG.info(String.format("Deleting caff of %s", caffId));
@@ -126,7 +127,7 @@ public class CaffController {
         return ResponseEntity.ok(caffDTO);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN_USER')")
     @RequestMapping(path = "/caff", method = RequestMethod.PUT, produces = "application/json")
     ResponseEntity<Object> updateResource(@RequestBody CaffDTO caffDTO){
         LOG.info(String.format("Updating caff with id: %s", caffDTO.getId()));

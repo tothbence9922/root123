@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,6 +35,7 @@ public class CommentController {
     @Autowired
     ConversionService conversionService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/comment/{commentId}", method = RequestMethod.GET, produces = "application/json")
     CommentDTO getResourceById(@PathVariable(name = "commentId") Long commentId){
         LOG.info(String.format("Requesting comment with id %s", commentId));
@@ -45,7 +47,7 @@ public class CommentController {
         LOG.info("Comment found. Sending comment data to client.");
         return commentDTO;
     }
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/comment", method = RequestMethod.GET, produces = "application/json")
     List<CommentDTO> getAllResources(){
         LOG.info("Requesting all comments.");
@@ -60,7 +62,7 @@ public class CommentController {
         return commentDTOS;
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(path = "/comment", method = RequestMethod.POST, produces = "application/json")
     ResponseEntity<Object> createResource(@RequestBody CommentDTO commentDTO){
         LOG.info("Creating new comment");
@@ -86,7 +88,7 @@ public class CommentController {
                 .body(comment);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN_USER')")
     @RequestMapping(path = "/comment", method = RequestMethod.DELETE, produces = "application/json")
     ResponseEntity<Object> removeResourceById(@RequestBody CommentDTO commentDTO){
         LOG.info(String.format("Deleting comment of %s", commentDTO.getId()));
@@ -104,7 +106,7 @@ public class CommentController {
         return ResponseEntity.ok(commentDTO);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN_USER')")
     @RequestMapping(path = "/comment", method = RequestMethod.PUT, produces = "application/json")
     ResponseEntity<Object> updateResource(@RequestBody CommentDTO commentDTO){
         LOG.info(String.format("Updating comment with id: %s", commentDTO.getId()));
