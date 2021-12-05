@@ -1,6 +1,6 @@
 import { Button, TextField } from '@material-ui/core'
 import axios from 'axios'
-import { errorToast, successToast } from 'components/common/Toast/Toast'
+import { errorToast, successToast, warningToast } from 'components/common/Toast/Toast'
 import URLS from 'constants/URLS'
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
@@ -21,7 +21,7 @@ const BackgroundWrapper = styled.div`
 
 const FixedWrapper = styled.div`
     width: 100%;
-    max-width: 1000px;
+    max-width: 300px;
     position: fixed;
     padding: 0 1rem;
     left: 50%;
@@ -47,8 +47,8 @@ const ModalWrapper = styled.div`
 const ModalTitleWrapper = styled.div`
     width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
     margin: 1rem 0;
 `
 
@@ -65,59 +65,41 @@ const ModalRow = styled.div`
     align-items: center;
 `
 
-const ButtonWrapper = styled.div`˙
+const ButtonWrapper = styled.div`
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
 `
 
-function CommentModal(props) {
-    const { id } = useParams()
+function UserModal(props) {
 
-    const formik = useFormik({
-        initialValues: {
-            text: '',
-            userId: AuthService.getUsername(),
-            caffId: id
-        },
-        validationSchema: validationSchema,
-        onSubmit: (values) => {
-            handlePost(values)
-        },
-    });
+    const [res, setRes] = useState();
+    const [err, setErr] = useState();
+    const [loading, setLoading] = useState(false);
 
-    const [res, setRes] = useState()
-    const [err, setErr] = useState()
-    const [loading, setLoading] = useState(false)
-
-
-    const handlePost = async () => {
+    const handleDelete = async () => {
         try {
             setLoading(true)
-            const res = await axios.post(
-                URLS.comment,
-                formik.values,
-                {
-                    headers: {
-                        Authorization: AuthService.authHeader(),
-                    }
-                }
+            const res = await axios.delete(
+                `http://localhost:8080/auth/admin/realms/testrealm/users/${props.user.id}`
             )
             setRes(res.data)
             if (res.status >= 200 && res.status < 300) {
-                setLoading(false)
-                successToast("Comment posted!")
-                props.setOpen(false);
+                successToast("Delete successful")
+                props.setOpen(false)
             } else if (res.status === 401) {
-                AuthService.updateToken(handlePost)
+                AuthService.updateToken(handleDelete)
+                warningToast("Unauthorized")
             } else {
-                errorToast("Posting comment failed.")
-                props.setOpen(false);
+                warningToast(res.statusText)
             }
             setLoading(false)
         } catch (err) {
             setErr(err)
+            errorToast(err)
         }
+
     }
 
     return (
@@ -126,26 +108,12 @@ function CommentModal(props) {
                 <ModalWrapper onClick={(event) => event.stopPropagation()}>
                     <ModalTitleWrapper>
                         <ModalTitle>
-                            Leave a comment
+                            Delete user
                         </ModalTitle>
                     </ModalTitleWrapper>
-                    <ModalRow>
-                        <TextField
-                            required
-                            id="text"
-                            name="text"
-                            label="Leave your comment!"
-                            multiline
-                            fullWidth
-                            minRows={3}
-                            value={formik.values.text}
-                            onChange={formik.handleChange}
-                            error={formik.touched.text && Boolean(formik.errors.text)}
-                            helperText={formik.touched.text && formik.errors.text}
-                        />
-                    </ModalRow>
                     <ButtonWrapper>
-                        <Button onClick={formik.submitForm} variant="contained" component="button">Leave a comment!</Button>
+                        <Button onClick={handleDelete} variant="contained" component="button">Confirm</Button>
+                        <Button onClick={() => props.setOpen(false)} variant="contained" component="button">Cancel</Button>
                     </ButtonWrapper>
 
                 </ModalWrapper>
@@ -154,4 +122,4 @@ function CommentModal(props) {
     )
 }
 
-export default CommentModal
+export default UserModal

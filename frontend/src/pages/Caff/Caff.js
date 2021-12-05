@@ -9,6 +9,7 @@ import AuthService from "services/Auth/AuthService"
 import styled from "styled-components"
 import { errorToast } from "components/common/Toast/Toast"
 import { Link } from "react-router-dom"
+import fileDownload from "js-file-download"
 
 const CaffWrapper = styled.div`
     padding: 2rem 0;
@@ -84,19 +85,7 @@ const DetailValue = styled.p`
     font-weight: 600;
 `
 
-const dummyData = {
-    id: '1',
-    name: 'caff-1',
-    thumbnail: 'https://cdn2.thedogapi.com/images/S1GWY_hr7_1280.jpg',
-    userId: 'user-1',
-    data: null,
-    creator: 'caff-creator-1',
-    createdAt: '2021-09-11',
-    metaData: "sample_meta"
-}
-
 const Caff = () => {
-
     const { id } = useParams()
     const [caff, setCaff] = useState();
     const [errGet, setErrGet] = useState();
@@ -113,8 +102,10 @@ const Caff = () => {
                     }
                 }
             )
-            if (res.status === 200) {
+            if (res.status >= 200 && res.status < 300) {
                 setCaff(res.data)
+            } else if (res.status === 401) {
+                AuthService.updateToken(fetchData)
             } else {
                 errorToast("An error occured while loading the CAFF.")
             }
@@ -133,24 +124,7 @@ const Caff = () => {
     const toggleOpen = () => { setOpen(!open) }
 
     const handleDownload = () => {
-        const url = window.URL.createObjectURL(
-            new Blob([caff.data]),
-          );
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute(
-            'download',
-            `${caff.name}.caff`,
-          );
-      
-          // Append to html link element page
-          document.body.appendChild(link);
-      
-          // Start download
-          link.click();
-      
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
+        fileDownload(caff.data, `${caff.name}.caff`)
     }
 
     return (
@@ -197,12 +171,16 @@ const Caff = () => {
                         </DetailValue>
                     </DetailRow>
                     <MediaWrapper>
-                        <CaffMedia src={caff.thumbnail} alt={`CAFF preview for ${caff.name}`} />
+                        <CaffMedia src={`data:image/jpeg;base64,${caff.thumbnail}`} alt={`CAFF preview for ${caff.name}`} />
+                        <p>{caff.data}</p>
                     </MediaWrapper>
                     <ButtonsRow>
-                        <Button onClick={handleDownload} variant="contained" component="button">Download</Button>
+                        <Button onClick={AuthService.isLoggedIn() ? handleDownload : () => { AuthService.doLogin() }} variant="contained" component="button">Download</Button>
                         <Button onClick={toggleOpen} variant="contained" component="button">Leave a comment!</Button>
                     </ButtonsRow>
+                    {
+
+                    }
                     {open &&
                         <CommentModal id={caff.id} setOpen={setOpen} />
                     }

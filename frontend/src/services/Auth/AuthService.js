@@ -1,6 +1,7 @@
 
 import KeyCloak from "keycloak-js"
 import keyCloakConfig from "constants/keycloak.json"
+import { errorToast } from "components/common/Toast/Toast";
 
 const _kc = new KeyCloak(keyCloakConfig)
 
@@ -12,6 +13,9 @@ const initKeyCloak = (onInitCallback) => {
         .then((authenticated) => {
             onInitCallback();
         })
+        .then(_ => {
+            _kc.onTokenExpired = () => _kc.updateToken(600)
+        })
 };
 
 const doLogin = _kc.login
@@ -19,6 +23,17 @@ const doLogin = _kc.login
 const doLogout = _kc.logout
 
 const getToken = () => _kc.token
+
+const updateToken = (successCallback) => {
+    _kc.updateToken(5).then(function (refreshed) {
+        if (refreshed) {
+            successCallback()
+        }
+    }).catch(function () {
+        errorToast('Failed to refresh the token, or the session has expired');
+        _kc.doLogin()
+    });
+}
 
 const getUsername = () => _kc.tokenParsed?.preferred_username
 const getFirstName = () => _kc.tokenParsed?.given_name
@@ -32,6 +47,7 @@ const AuthService = {
     initKeyCloak,
     isLoggedIn,
     authHeader,
+    updateToken,
     doLogin,
     doLogout,
     getToken,

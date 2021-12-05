@@ -38,7 +38,6 @@ const DescriptionText = styled.h2`
     height: 1.25rem;
 `
 const Browse = () => {
-
     const [caffs, setCaffs] = useState([])
     const [err, setErr] = useState()
     const [loading, setLoading] = useState(false)
@@ -47,14 +46,9 @@ const Browse = () => {
         try {
             setLoading(true)
             const res = await axios.get(
-                URLS.caff,
-                {
-                    headers: {
-                        Authorization: AuthService.authHeader()
-                    }
-                }
+                URLS.caff
             )
-            if (res.status === 200) {
+            if (res.status >= 200 && res.status < 300) {
                 setCaffs(res.data)
             } else {
                 errorToast("Loading CAFFs failed")
@@ -78,12 +72,11 @@ const Browse = () => {
                 </TitleText>
             </TitleWrapper>
             <ListWrapper>
-                {caffs.length === 0 &&
+                {caffs.length === 0 ?
                     <TitleText>
                         There are no CAFFs uploaded yet...
                     </TitleText>
-                }
-                {
+                    :
                     caffs.map((caff, idx) => (
                         <CaffPreview id={caff.id} name={caff.name ? caff.name : `CAFF ${idx}`} src={caff.data} />
                     ))

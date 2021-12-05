@@ -22,6 +22,8 @@ import Browse from 'pages/Browse/Browse'
 import Upload from 'pages/Upload/Upload'
 import NotFound from './pages/NotFound/NotFound'
 import Caff from 'pages/Caff/Caff'
+import Admin from 'pages/Admin/Admin'
+import { useEffect } from 'react'
 
 const BodyWrapper = styled.div`
     min-height: 100vh;
@@ -46,8 +48,7 @@ function App() {
             <Route exact path="/browse" element={AuthService.isLoggedIn() ? <Browse /> : AuthService.doLogin()} />
             <Route exact path="/browse/:id" element={AuthService.isLoggedIn() ? <Caff /> : AuthService.doLogin()} />
             <Route exact path="/upload" element={AuthService.isLoggedIn() ? <Upload /> : AuthService.doLogin()} />
-            {//<Route exact path="/admin" element={AuthService.hasRole("admin") ? <Admin /> : AuthService.doLogin()} />
-            }
+            <Route exact path="/admin" element={(AuthService.isLoggedIn() && AuthService.hasRole("admin_user")) ? <Admin /> : (AuthService.isLoggedIn() ? <Navigate to='/browse' /> : <NotFound />)} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "uppercase",
     fontFamily: "raleway",
     color: 'white',
+    '&:hover': {
+      color: 'darkgrey',
+    }
   },
   title: {
     fontFamily: "raleway",

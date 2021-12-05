@@ -14,6 +14,8 @@ const PreviewCard = styled.div`
     box-shadow: 11px 11px 11px rgba(0, 0, 0, 0.3);
     transition: 0.1s linear;
 
+    border: 1px solid lightgrey;
+
     opacity: 0.8;
 
     &:hover {
@@ -62,7 +64,7 @@ const CaffPreview = (props) => {
     return (
         <PreviewCard onClick={() => navigate(`/browse/${props.id}`)}>
             <CardMediaWrapper>
-                <CardMedia src={props.src} alt={`CAFF preview for ${props.name}`} />
+                <CardMedia src={`data:image/jpeg;base64,${props.src}`} alt={`CAFF preview for ${props.name}`} />
             </CardMediaWrapper>
             <CardTitleWrapper>
                 <CardTitle>

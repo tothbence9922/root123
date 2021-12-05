@@ -108,7 +108,7 @@ const Upload = () => {
 
     const [progressData, setProgressData] = useState({ loaded: 0, total: 1 })
 
-    const handlePost = async (values) => {
+    const handlePost = async () => {
         try {
             setLoading(true)
             let formData = new FormData();
@@ -116,7 +116,6 @@ const Upload = () => {
                 type: "application/json"
             }));
             formData.append('caffData', file);
-            console.log(formData)
             const res = await axios.post(
                 URLS.caff,
                 formData,
@@ -128,11 +127,12 @@ const Upload = () => {
                     onUploadProgress: (e) => setProgressData(e)
                 }
             )
-            console.log({res})
-            if (res.status === 200) {
+            if (res.status >= 200 && res.status < 300) {
                 setRes(res.data)
                 successToast("Upload successful!")
                 setLoading(false)
+            } else if (res.status === 401) {
+                AuthService.updateToken(handlePost)
             } else {
                 errorToast("Upload failed!")
                 setLoading(false)

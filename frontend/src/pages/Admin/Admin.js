@@ -7,6 +7,8 @@ import AuthService from "services/Auth/AuthService"
 import styled from "styled-components"
 
 import keycloakConfig from 'constants/keycloak.json'
+import UserItem from "components/admin/User/UserItem"
+
 
 const BrowseWrapper = styled.div`
     padding: 2rem 0;
@@ -27,10 +29,9 @@ const TitleWrapper = styled.div`
 const ListWrapper = styled.div`
     width: 100%;
     max-width: 1000px;
-    display:grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-column-gap: 1rem;
-    grid-row-gap: 1rem;
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
 
 `
 const TitleText = styled.h1`
@@ -44,20 +45,22 @@ const Admin = () => {
     const [users, setUsers] = useState([])
     const [err, setErr] = useState()
     const [loading, setLoading] = useState(false)
-    
+
     const fetchData = async () => {
         try {
             setLoading(true)
             const res = await axios.get(
-                keycloakConfig.url + `/${keycloakConfig.realm}/clients/${keycloakConfig.clientId}/roles/user/users`,
+                'http://localhost:8080/auth/admin/realms/testrealm/users',
                 {
                     headers: {
                         Authorization: AuthService.authHeader()
                     }
                 }
             )
-            if (res.status === 200) {
+            if (res.status >= 200 && res.status < 300) {
                 setUsers(res.data)
+            } else if (res.status === 401) {
+                AuthService.updateToken(fetchData)
             } else {
                 errorToast("Loading users failed")
             }
@@ -70,9 +73,7 @@ const Admin = () => {
     useEffect(() => {
         fetchData()
     }, [])
-    useEffect(() => {
-        console.log({users})
-    }, [users])
+
 
     return (
 
@@ -85,9 +86,7 @@ const Admin = () => {
             <ListWrapper>
                 {
                     users.map((user, idx) => (
-                        <div>
-                            <p>{`${JSON.stringify(user)}`}</p>
-                        </div>
+                        <UserItem user={user} key={`admin_page_user_list_${idx}`} />
                     ))
                 }
             </ListWrapper>
