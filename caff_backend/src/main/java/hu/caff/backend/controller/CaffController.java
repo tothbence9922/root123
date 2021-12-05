@@ -5,6 +5,8 @@ import hu.caff.backend.domain.Comment;
 import hu.caff.backend.dto.CaffDTO;
 import hu.caff.backend.dto.CommentDTO;
 import hu.caff.backend.service.CaffDomainService;
+import jni.jniparser.CAFFParser;
+import jni.jniparser.CAFFResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +73,18 @@ public class CaffController {
 
         Caff caff = conversionService.convert(caffDTO,Caff.class);
 
+        CAFFResponse resp = new CAFFParser().parse(caffData.getBytes());
+        System.out.println(resp.GetError());
+        System.out.println(resp.GetCreator());
+        System.out.println(resp.GetDate());
+        System.out.println(resp.GetThumbnailCaption());
+        System.out.println(resp.GetThumbnailTags());
+        System.out.println(resp.GetThumbnail().length);
+
+        assert caff != null;
         caff.setData(caffData.getBytes());
+
+        caff.setThumbnail(resp.GetThumbnail());
 
         caff = CAFFDomainService.createResource(caff);
 

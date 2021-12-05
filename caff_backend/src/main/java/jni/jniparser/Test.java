@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 public class Test {
 	public static void main(String[] args) {
 		try {
-			byte[] data = Files.readAllBytes(Paths.get("1.caff"));
+			byte[] data = Files.readAllBytes(Paths.get("C:\\Users\\Felhasznalo\\Desktop\\Projects\\root123\\caff_backend\\src\\main\\resources\\1.caff"));
 			CAFFResponse resp = new CAFFParser().parse(data);
 			System.out.println(resp.GetError());
 			System.out.println(resp.GetCreator());
