@@ -93,10 +93,10 @@ public class CaffController {
 
         caff.setCreatedAt(resp.GetDate());
 
-        caff.getMetadata().add(resp.GetDate());
-        caff.getMetadata().add(resp.GetCreator());
-        caff.getMetadata().add(resp.GetThumbnailCaption());
-        caff.getMetadata().add(resp.GetThumbnailTags());
+        caff.getCaffmeta().add(resp.GetDate());
+        caff.getCaffmeta().add(resp.GetCreator());
+        caff.getCaffmeta().add(resp.GetThumbnailCaption());
+        caff.getCaffmeta().add(resp.GetThumbnailTags());
 
         caff = CAFFDomainService.createResource(caff);
 

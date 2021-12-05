@@ -33,5 +33,6 @@ public class Caff {
     private String createdAt;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments =new ArrayList<>();
-    private List<String> metadata = new ArrayList<>();
+    @ElementCollection
+    private List<String> caffmeta = new ArrayList<>();
 }

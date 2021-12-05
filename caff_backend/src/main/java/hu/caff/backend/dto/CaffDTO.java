@@ -28,5 +28,5 @@ public class CaffDTO {
     private String createdAt;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<CommentDTO> comments =new ArrayList<>();
-    private List<String> metadata = new ArrayList<>();
+    private List<String> caffmeta = new ArrayList<>();
 }
