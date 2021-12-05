@@ -89,7 +89,7 @@ function UserModal(props) {
                 successToast("Delete successful")
                 props.setOpen(false)
             } else if (res.status === 401) {
-                AuthService.updateToken(handleDelete)
+                AuthService.doLogin()
                 warningToast("Unauthorized")
             } else {
                 warningToast(res.statusText)

@@ -107,9 +107,10 @@ function CommentModal(props) {
             if (res.status >= 200 && res.status < 300) {
                 setLoading(false)
                 successToast("Comment posted!")
-                props.setOpen(false);
+                props.fetchData()
+                props.setOpen(false)
             } else if (res.status === 401) {
-                AuthService.updateToken(handlePost)
+                AuthService.doLogin()
             } else {
                 errorToast("Posting comment failed.")
                 props.setOpen(false);

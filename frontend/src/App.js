@@ -24,6 +24,7 @@ import NotFound from './pages/NotFound/NotFound'
 import Caff from 'pages/Caff/Caff'
 import Admin from 'pages/Admin/Admin'
 import { useEffect } from 'react'
+import axios from 'axios'
 
 const BodyWrapper = styled.div`
     min-height: 100vh;
@@ -35,6 +36,29 @@ const BodyWrapper = styled.div`
 const FooterWrapper = styled.div`
   margin-top: auto;
 `
+
+axios.interceptors.request.use(
+  request => {
+    if (AuthService.isLoggedIn()) {
+      request.headers['userId'] = AuthService.getUsername()
+    }
+    return request
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+axios.interceptors.response.use(
+  response => {
+    if (response.status === 401) {
+      AuthService.doLogin()
+    }
+    return response
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 function App() {
 

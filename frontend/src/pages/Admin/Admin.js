@@ -60,7 +60,7 @@ const Admin = () => {
             if (res.status >= 200 && res.status < 300) {
                 setUsers(res.data)
             } else if (res.status === 401) {
-                AuthService.updateToken(fetchData)
+                AuthService.doLogin()
             } else {
                 errorToast("Loading users failed")
             }

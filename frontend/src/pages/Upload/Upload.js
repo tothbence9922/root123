@@ -132,13 +132,15 @@ const Upload = () => {
                 successToast("Upload successful!")
                 setLoading(false)
             } else if (res.status === 401) {
-                AuthService.updateToken(handlePost)
+                AuthService.doLogin()
             } else {
                 errorToast("Upload failed!")
                 setLoading(false)
             }
         } catch (err) {
+            errorToast("Upload failed!")
             setErr(err)
+            setLoading(false)
         }
     }
 

@@ -4,7 +4,7 @@ import CaffPreview from "components/caff/CaffPreview/CaffPreview"
 import CommentModal from "components/caff/Comment/CommentModal"
 import URLS from "constants/URLS"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import AuthService from "services/Auth/AuthService"
 import styled from "styled-components"
 import { errorToast } from "components/common/Toast/Toast"
@@ -48,7 +48,6 @@ const TitleText = styled.h1`
 const MediaWrapper = styled.div`
     width: 100%;
 
-    border-radius: 11px 11px 0 0;
     overflow: hidden;
     margin: 2rem 0 3rem 0;
 `
@@ -58,7 +57,57 @@ const CaffMedia = styled.img`
     width: 100%;
     height: auto;
 `
+const CommentName = styled.p`
+    font-size: 1.25rem;
+    font-weight: 400;
 
+`
+
+const CommentDate = styled.p`
+    font-size: 1rem;
+    font-weight: 600;
+`
+const CommentText = styled.div`
+    max-width: 80ch;
+    word-wrap: break-word;
+    font-weight: 600;
+    line-height: 1.5rem;
+`
+
+const DeleteWrapper = styled.div`
+    width: 100%;
+    display: grid;
+    place-items: center;
+`
+
+const DeleteButton = styled.div`
+    width: 100%;
+    max-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 11px;
+    font-size: 1.25rem;
+    font-weight: 400;
+
+    background: #f04a4a;
+    border: 1px solid black;
+    transition: 0.2s linear;
+
+    line-height: 1rem;
+    &:hover {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 1rem;
+
+        background: #f23535;
+        cursor: pointer;
+        transition: 0.2s linear;
+}
+`
 
 const ButtonsRow = styled.div`
     width: 100%;
@@ -73,6 +122,16 @@ const DetailRow = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+`
+const CommentRow = styled.div`
+    width: 100%;
+    background: #efefef;
+    border-radius: 11px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `
 
 const DetailName = styled.p`
@@ -105,14 +164,46 @@ const Caff = () => {
             if (res.status >= 200 && res.status < 300) {
                 setCaff(res.data)
             } else if (res.status === 401) {
-                AuthService.updateToken(fetchData)
+                AuthService.doLogin()
             } else {
                 errorToast("An error occured while loading the CAFF.")
             }
             setLoadingGet(false)
 
         } catch (err) {
+            setLoadingGet(false)
             setErrGet(err)
+        }
+    }
+
+    const [delRes, setDelRes] = useState();
+    const [delErr, setDelErr] = useState();
+    const [delLoading, setDelLoading] = useState(true);
+
+    const navigate = useNavigate()
+
+    const handleDelete = async () => {
+        try {
+            setDelLoading(true)
+            const res = await axios.delete(
+                URLS.caff + `/${id}`,
+                {
+                    headers: {
+                        Authorization: AuthService.authHeader()
+                    }
+                }
+            )
+            if (res.status >= 200 && res.status < 300) {
+                setDelRes(res.data)
+                navigate('/browse')
+            } else {
+                errorToast("An error occured while deleting the CAFF.")
+            }
+            setDelLoading(false)
+
+        } catch (err) {
+            setDelLoading(false)
+            setDelErr(err)
         }
     }
 
@@ -133,6 +224,13 @@ const Caff = () => {
             {
                 caff &&
                 <DetailsWrapper>
+                    {(AuthService.isLoggedIn() && AuthService.hasRole("admin_user")) &&
+                        <DeleteWrapper>
+                            <DeleteButton onClick={handleDelete}>
+                                Delete
+                            </DeleteButton>
+                        </DeleteWrapper>
+                    }
                     <TitleWrapper>
                         <TitleText>
                             {caff.name}
@@ -178,10 +276,26 @@ const Caff = () => {
                         <Button onClick={toggleOpen} variant="contained" component="button">Leave a comment!</Button>
                     </ButtonsRow>
                     {
-
+                        caff.comments?.map(comment => {
+                            return (
+                                <CommentRow>
+                                    <DetailRow>
+                                        <CommentName>
+                                            {comment.userId}
+                                        </CommentName>
+                                        <CommentDate>
+                                            {comment.createdAt}
+                                        </CommentDate>
+                                    </DetailRow>
+                                    <CommentText>
+                                        {comment.text}
+                                    </CommentText>
+                                </CommentRow>
+                            )
+                        })
                     }
                     {open &&
-                        <CommentModal id={caff.id} setOpen={setOpen} />
+                        <CommentModal fetchData={fetchData} id={caff.id} setOpen={setOpen} />
                     }
                 </DetailsWrapper>
             }
