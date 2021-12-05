@@ -20,26 +20,19 @@ public class Caff {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO)
     private Long id;
-
     private String name;
-
     @Lob
     @Column(columnDefinition="LONGBLOB")
     private byte[] thumbnail;
-
     private String userId;
-
     private String username;
-
     @Lob
     @Column(columnDefinition="LONGBLOB")
     private byte[] data;
-
     private String creator;
-
     private String createdAt;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments =new ArrayList<>();
-
+    @ElementCollection
+    private List<String> caffmeta = new ArrayList<>();
 }
