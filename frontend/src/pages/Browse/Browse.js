@@ -78,7 +78,7 @@ const Browse = () => {
                     </TitleText>
                     :
                     caffs.map((caff, idx) => (
-                        <CaffPreview id={caff.id} name={caff.name ? caff.name : `CAFF ${idx}`} src={caff.data} />
+                        <CaffPreview id={caff.id} name={caff.name ? caff.name : `CAFF ${idx}`} src={caff.thumbnail} />
                     ))
                 }
             </ListWrapper>
