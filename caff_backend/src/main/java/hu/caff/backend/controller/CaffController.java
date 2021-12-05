@@ -74,6 +74,7 @@ public class CaffController {
         Caff caff = conversionService.convert(caffDTO,Caff.class);
 
         CAFFResponse resp = new CAFFParser().parse(caffData.getBytes());
+
         System.out.println(resp.GetError());
         System.out.println(resp.GetCreator());
         System.out.println(resp.GetDate());

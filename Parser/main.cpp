@@ -11,6 +11,7 @@ int main(int argc, char* argv[]) {
 		else if (argc == 2) {
 			std::shared_ptr<CAFF> caff = std::make_shared<CAFF>(argv[1]);
 			caff->parse();
+			printf("haha");
 		}
 		else if (argc == 3) {
 			std::shared_ptr<CAFF> caff = std::make_shared<CAFF>(argv[1], argv[2]);
