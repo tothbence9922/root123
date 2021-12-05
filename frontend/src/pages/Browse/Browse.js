@@ -46,7 +46,12 @@ const Browse = () => {
         try {
             setLoading(true)
             const res = await axios.get(
-                URLS.caff
+                URLS.caff,
+                {
+                    headers: {
+                        Authorization: AuthService.authHeader()
+                    }
+                }
             )
             if (res.status >= 200 && res.status < 300) {
                 setCaffs(res.data)

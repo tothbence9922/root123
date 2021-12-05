@@ -27,6 +27,7 @@ public class CaffDTOEntityConverter implements Converter<CaffDTO, Caff> {
                                 conversionService.convert(comment, Comment.class)).filter(Objects::nonNull)
                         .collect(Collectors.toList()))
                 .createdAt(caffDTO.getCreatedAt())
+                .caffmeta(caffDTO.getCaffmeta())
                 .creator(caffDTO.getCreator())
                 .data(caffDTO.getData())
                 .name(caffDTO.getName())

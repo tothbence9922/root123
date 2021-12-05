@@ -215,7 +215,12 @@ const Caff = () => {
     const toggleOpen = () => { setOpen(!open) }
 
     const handleDownload = () => {
-        fileDownload(caff.data, `${caff.name}.caff`)
+        let data = new Blob([caff.data], { type: 'application/octet-stream; charset=x-user-defined;' });
+        let csvURL = window.URL.createObjectURL(data);
+        let tempLink = document.createElement('a');
+        tempLink.href = csvURL;
+        tempLink.setAttribute('download', 'filename.caff');
+        tempLink.click();
     }
 
     return (
@@ -265,7 +270,11 @@ const Caff = () => {
                             Meta data
                         </DetailName>
                         <DetailValue>
-                            {caff.metaData}
+                            {
+                                caff.metaData?.map(data => (
+                                    <p>{data}</p>
+                                ))
+                            }
                         </DetailValue>
                     </DetailRow>
                     <MediaWrapper>

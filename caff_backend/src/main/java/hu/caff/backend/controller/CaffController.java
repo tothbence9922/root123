@@ -91,9 +91,9 @@ public class CaffController {
 
         caff.setThumbnail(resp.GetThumbnail());
 
-        caff.setCreatedAt(resp.GetDate());
-
-        caff.getCaffmeta().add(resp.GetDate());
+        caff.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        LOG.info(resp.GetCreator().toString());
+        caff.getCaffmeta().add(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         caff.getCaffmeta().add(resp.GetCreator());
         caff.getCaffmeta().add(resp.GetThumbnailCaption());
         caff.getCaffmeta().add(resp.GetThumbnailTags());

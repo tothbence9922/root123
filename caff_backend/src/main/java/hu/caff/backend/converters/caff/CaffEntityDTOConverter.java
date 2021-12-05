@@ -30,6 +30,7 @@ public class CaffEntityDTOConverter implements Converter<Caff, CaffDTO> {
                .creator(caff.getCreator())
                .data(caff.getData())
                .name(caff.getName())
+               .caffmeta(caff.getCaffmeta())
                .thumbnail(caff.getThumbnail())
                .username(caff.getUsername())
                .build();
