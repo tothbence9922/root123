@@ -51,7 +51,7 @@ const UserItem = (props) => {
         <UserItemWrapper onClick={() => setOpen(true)}>
             {
                 open &&
-                <UserModal setOpen={setOpen} user={props.user} />
+                <UserModal fetchUsers={props.fetchUsers} setOpen={setOpen} user={props.user} />
             }
             <ItemRowWrapper>
                 <ItemRowName>

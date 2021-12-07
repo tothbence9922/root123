@@ -49,7 +49,8 @@ const Admin = () => {
     const fetchData = async () => {
         try {
             setLoading(true)
-            const res = await axios.get(
+            const axiosAdmin = axios.create();
+            const res = await axiosAdmin.get(
                 'http://localhost:8080/auth/admin/realms/testrealm/users',
                 {
                     headers: {
@@ -59,8 +60,6 @@ const Admin = () => {
             )
             if (res.status >= 200 && res.status < 300) {
                 setUsers(res.data)
-            } else if (res.status === 401) {
-                AuthService.doLogin()
             } else {
                 errorToast("Loading users failed")
             }
@@ -86,7 +85,7 @@ const Admin = () => {
             <ListWrapper>
                 {
                     users.map((user, idx) => (
-                        <UserItem user={user} key={`admin_page_user_list_${idx}`} />
+                        <UserItem fetchUsers={fetchData} user={user} key={`admin_page_user_list_${idx}`} />
                     ))
                 }
             </ListWrapper>

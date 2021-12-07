@@ -81,12 +81,19 @@ function UserModal(props) {
     const handleDelete = async () => {
         try {
             setLoading(true)
-            const res = await axios.delete(
-                `http://localhost:8080/auth/admin/realms/testrealm/users/${props.user.id}`
+            const axiosAdmin = axios.create();
+            const res = await axiosAdmin.delete(
+                `http://localhost:8080/auth/admin/realms/testrealm/users/${props.user.id}`,
+                {
+                    headers: {
+                        Authorization: AuthService.authHeader()
+                    }
+                }
             )
             setRes(res.data)
             if (res.status >= 200 && res.status < 300) {
                 successToast("Delete successful")
+                props.fetchUsers()
                 props.setOpen(false)
             } else if (res.status === 401) {
                 AuthService.doLogin()
